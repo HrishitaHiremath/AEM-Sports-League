@@ -1,0 +1,1269 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sports League Tournament</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+            font-family: 'Rajdhani', 'Segoe UI', Tahoma, sans-serif;
+        }
+        .trophy-icon::before {
+            content: '🏆';
+            font-size: 1.2em;
+        }
+        .loading-spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-left: 8px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .bracket-match {
+            background: white;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 12px;
+            min-width: 200px;
+            position: relative;
+        }
+        .bracket-connector {
+            position: relative;
+        }
+        .bracket-connector::after {
+            content: '';
+            position: absolute;
+            right: -40px;
+            top: 50%;
+            width: 40px;
+            height: 2px;
+            background-color: #cbd5e1;
+        }
+        .bracket-connector::before {
+            content: '   ';
+            position: absolute;
+            right: -42px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #cbd5e1;
+            font-size: 12px;
+        }
+        .placeholder-team {
+            color: #94a3b8;
+            font-style: italic;
+        }
+        .nav-tab {
+            transition: all 0.3s ease;
+        }
+        .nav-tab:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+ </head>
+ <body class="h-full">
+  <div id="app" class="w-full h-full overflow-auto" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
+   <div class="min-h-full p-6"><!-- Header -->
+    <div class="text-center mb-8">
+     <h1 id="tournament-title" class="text-5xl font-bold text-white mb-2">AEM Sports Tournament 2026</h1>
+     <p id="tournament-subtitle" class="text-xl text-amber-200">Annual Championship</p>
+    </div><!-- Sport Tabs -->
+    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-6">
+     <div id="sport-tabs" class="flex flex-wrap gap-2 justify-center"></div>
+    </div><!-- View Toggle -->
+    <div class="flex justify-center gap-4 mb-6"><button id="view-bracket" class="nav-tab px-6 py-3 rounded-lg font-bold text-white shadow-lg"> 🏆 Sport Schedules </button> <button id="view-overall" class="nav-tab px-6 py-3 rounded-lg font-bold bg-white/20 text-white hover:bg-white/30">    Overall Standings </button>
+    </div><!-- Content Area -->
+    <div id="content-area" class="bg-white rounded-lg shadow-2xl p-6"></div>
+   </div>
+  </div>
+  <script>
+        const SPORTS_DATA = {
+            "Cricket": {
+                "Group A": ["Project Falcons", "Power Predators", "Central Stallions", "Steel Lions"],
+                "Group B": ["Voltage Vipers", "Vayu Warriors", "Iron Titans", "Tech Thunder"]
+            },
+            "Football": {
+                "Group A": ["Power Predators", "Project Falcons", "Steel Lions", "Vayu Warriors"],
+                "Group B": ["Iron Titans", "Voltage Vipers", "Central Stallions", "Tech Thunder"]
+            },
+            "Handball": {
+                "Group A": ["Power Predators", "Voltage Vipers", "Vayu Warriors", "Iron Titans"],
+                "Group B": ["Steel Lions", "Tech Thunder", "Central Stallions", "Project Falcons"]
+            },
+            "Tug of War (Female)": {
+                "Group A": ["Power Predators", "Voltage Vipers", "Vayu Warriors", "Central Stallions"],
+                "Group B": ["Iron Titans", "Steel Lions", "Tech Thunder", "Project Falcons"]
+            },
+            "Volleyball": {
+                "Group A": ["Vayu Warriors", "Central Stallions", "Voltage Vipers", "Power Predators"],
+                "Group B": ["Steel Lions", "Project Falcons", "Iron Titans", "Tech Thunder"]
+            },
+            "Table Tennis": {
+                "Group A": ["Central Stallions", "Power Predators", "Vayu Warriors", "Tech Thunder"],
+                "Group B": ["Project Falcons", "Steel Lions", "Iron Titans", "Voltage Vipers"]
+            },
+            "Badminton": {
+                "Group A": ["Iron Titans", "Steel Lions", "Vayu Warriors", "Central Stallions"],
+                "Group B": ["Voltage Vipers", "Tech Thunder", "Power Predators", "Project Falcons"]
+            },
+            "Carrom": {
+                "Group A": ["Project Falcons", "Iron Titans", "Power Predators", "Vayu Warriors"],
+                "Group B": ["Voltage Vipers", "Steel Lions", "Central Stallions", "Tech Thunder"]
+            },
+            "Chess": {
+                "Group A": ["Central Stallions", "Steel Lions", "Power Predators", "Project Falcons"],
+                "Group B": ["Vayu Warriors", "Iron Titans", "Voltage Vipers", "Tech Thunder"]
+            },
+            "Tug of War (Male)": {
+                "Group A": ["Power Predators", "Voltage Vipers", "Project Falcons", "Tech Thunder"],
+                "Group B": ["Steel Lions", "Iron Titans", "Central Stallions", "Vayu Warriors"]
+            }
+        };
+
+        let currentSport = "Cricket";
+        let currentView = "bracket";
+        let allMatches = [];
+
+        const defaultConfig = {
+            tournament_title: "Sports League Championship",
+            tournament_subtitle: "Season 2024",
+            primary_color: "#2563eb",
+            secondary_color: "#dbeafe",
+            text_color: "#1e3a8a",
+            accent_color: "#3b82f6",
+            button_color: "#2563eb"
+        };
+
+        function generateMatchId(sport, stage, team1, team2) {
+            return `${sport}-${stage}-${team1}-${team2}`.replace(/\s+/g, '-').replace(/[()]/g, '').toLowerCase();
+        }
+
+        function getTeamStandings(sport, group) {
+            const groupMatches = allMatches.filter(m => 
+                m.sport === sport && 
+                m.group === group && 
+                m.stage === "Group Stage" && 
+                m.completed
+            );
+
+            const teams = SPORTS_DATA[sport][group];
+            const standings = teams.map(team => ({
+                team,
+                played: 0,
+                won: 0,
+                lost: 0,
+                points: 0
+            }));
+
+            groupMatches.forEach(match => {
+                const team1Idx = standings.findIndex(s => s.team === match.team1);
+                const team2Idx = standings.findIndex(s => s.team === match.team2);
+
+                if (team1Idx !== -1) {
+                    standings[team1Idx].played++;
+                    if (match.winner === match.team1) {
+                        standings[team1Idx].won++;
+                        standings[team1Idx].points += 2;
+                    } else {
+                        standings[team1Idx].lost++;
+                    }
+                }
+
+                if (team2Idx !== -1) {
+                    standings[team2Idx].played++;
+                    if (match.winner === match.team2) {
+                        standings[team2Idx].won++;
+                        standings[team2Idx].points += 2;
+                    } else {
+                        standings[team2Idx].lost++;
+                    }
+                }
+            });
+
+            return standings.sort((a, b) => b.points - a.points || b.won - a.won);
+        }
+
+        function getGroupWinner(sport, group) {
+            const standings = getTeamStandings(sport, group);
+            return standings.length > 0 && standings[0].played > 0 ? standings[0].team : null;
+        }
+
+        function getGroupRunnerUp(sport, group) {
+            const standings = getTeamStandings(sport, group);
+            return standings.length > 1 && standings[1].played > 0 ? standings[1].team : null;
+        }
+
+        function getSportWinner(sport) {
+            const finalMatch = allMatches.find(m => 
+                m.sport === sport && m.stage === "Final" && m.completed
+            );
+            return finalMatch ? finalMatch.winner : null;
+        }
+
+        function getSportRunnerUp(sport) {
+            const finalMatch = allMatches.find(m => 
+                m.sport === sport && m.stage === "Final" && m.completed
+            );
+            return finalMatch ? finalMatch.loser : null;
+        }
+
+        function getSemiFinalist(sport, semiNum) {
+            const semiMatch = allMatches.find(m => 
+                m.sport === sport && m.stage === `Semi Final ${semiNum}` && m.completed
+            );
+            return semiMatch ? semiMatch.loser : null;
+        }
+
+        function getOverallStandings() {
+            const allTeams = new Set();
+            Object.values(SPORTS_DATA).forEach(sport => {
+                Object.values(sport).forEach(group => {
+                    group.forEach(team => allTeams.add(team));
+                });
+            });
+
+            const standings = Array.from(allTeams).map(team => ({
+                team,
+                points: 0,
+                golds: 0,
+                silvers: 0,
+                bronzes: 0,
+                participations: 0
+            }));
+
+            Object.keys(SPORTS_DATA).forEach(sport => {
+                const winner = getSportWinner(sport);
+                const runnerUp = getSportRunnerUp(sport);
+                const thirdPlace1 = getSemiFinalist(sport, 1);
+                const thirdPlace2 = getSemiFinalist(sport, 2);
+                
+                if (winner) {
+                    const idx = standings.findIndex(s => s.team === winner);
+                    if (idx !== -1) {
+                        standings[idx].points += 90;
+                        standings[idx].golds++;
+                    }
+                }
+                
+                if (runnerUp) {
+                    const idx = standings.findIndex(s => s.team === runnerUp);
+                    if (idx !== -1) {
+                        standings[idx].points += 60;
+                        standings[idx].silvers++;
+                    }
+                }
+
+                [thirdPlace1, thirdPlace2].forEach(team => {
+                    if (team) {
+                        const idx = standings.findIndex(s => s.team === team);
+                        if (idx !== -1) {
+                            standings[idx].points += 45;
+                            standings[idx].bronzes++;
+                        }
+                    }
+                });
+
+                Object.values(SPORTS_DATA[sport]).forEach(group => {
+                    group.forEach(team => {
+                        const idx = standings.findIndex(s => s.team === team);
+                        if (idx !== -1) {
+                            if (team !== winner && team !== runnerUp && team !== thirdPlace1 && team !== thirdPlace2) {
+                                const hasMatches = allMatches.some(m => 
+                                    m.sport === sport && 
+                                    (m.team1 === team || m.team2 === team) && 
+                                    m.completed
+                                );
+                                if (hasMatches) {
+                                    standings[idx].points += 30;
+                                    standings[idx].participations++;
+                                }
+                            }
+                        }
+                    });
+                });
+            });
+
+            return standings.sort((a, b) => b.points - a.points || b.golds - a.golds || b.silvers - a.silvers);
+        }
+
+        const SPORT_ICONS = {
+            "Cricket": "🏏",
+            "Football": "⚽",
+            "Handball": "🤾",
+            "Volleyball": "🏐",
+            "Table Tennis": "🏓",
+            "Badminton": "🏸",
+            "Carrom": "🎯",
+            "Chess": "♟️",
+            "Tug of War (Female)": "💪",
+            "Tug of War (Male)": "💪"
+        };
+
+        function renderSportTabs() {
+            const tabsContainer = document.getElementById('sport-tabs');
+            tabsContainer.innerHTML = '';
+
+            Object.keys(SPORTS_DATA).forEach(sport => {
+                const button = document.createElement('button');
+                const icon = SPORT_ICONS[sport] || '🏆';
+                button.textContent = `${icon} ${sport}`;
+                button.className = `px-4 py-2 rounded-lg font-semibold transition-all ${
+                    currentSport === sport 
+                        ? 'text-white shadow-lg' 
+                        : 'bg-white/20 text-white hover:bg-white/30'
+                }`;
+                
+                if (currentSport === sport) {
+                    button.style.backgroundColor = window.elementSdk?.config?.accent_color || defaultConfig.accent_color;
+                }
+                
+                button.addEventListener('click', () => {
+                    currentSport = sport;
+                    renderSportTabs();
+                    renderContent();
+                });
+                
+                tabsContainer.appendChild(button);
+            });
+        }
+
+        function setupViewToggle() {
+            const buttons = {
+                'bracket': document.getElementById('view-bracket'),
+                'overall': document.getElementById('view-overall')
+            };
+
+            Object.entries(buttons).forEach(([view, button]) => {
+                button.addEventListener('click', () => {
+                    currentView = view;
+                    
+                    Object.values(buttons).forEach(btn => {
+                        btn.className = 'nav-tab px-6 py-3 rounded-lg font-bold bg-white/20 text-white hover:bg-white/30';
+                    });
+                    button.className = 'nav-tab px-6 py-3 rounded-lg font-bold text-white shadow-lg';
+                    button.style.backgroundColor = window.elementSdk?.config?.accent_color || defaultConfig.accent_color;
+                    
+                    renderContent();
+                });
+            });
+        }
+
+        function renderContent() {
+            if (currentView === 'overall') {
+                renderOverallStandings();
+            } else {
+                renderBracket();
+            }
+        }
+
+        function renderOverallStandings() {
+            const contentArea = document.getElementById('content-area');
+            const standings = getOverallStandings();
+
+            let html = `
+                <div class="mb-6">
+                    <h2 class="text-4xl font-bold mb-6 text-center" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                        🏆 Overall Championship Standings
+                    </h2>
+                    <div class="mb-4 p-4 rounded-lg" style="background-color: ${window.elementSdk?.config?.secondary_color || defaultConfig.secondary_color}">
+                        <p class="text-sm font-semibold mb-2" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                            Points System: 🥇 Winner = 90 pts | 🥈 Runner-up = 60 pts | 🥉 3rd Place = 45 pts | Participation = 30 pts
+                        </p>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b-4" style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
+                                    <th class="text-left py-3 px-4 font-bold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Rank</th>
+                                    <th class="text-left py-3 px-4 font-bold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Team</th>
+                                    <th class="text-center py-3 px-4 font-bold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Total Points</th>
+                                    <th class="text-center py-3 px-4 font-bold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">🥇</th>
+                                    <th class="text-center py-3 px-4 font-bold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">🥈</th>
+                                    <th class="text-center py-3 px-4 font-bold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">🥉</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+
+            standings.forEach((s, idx) => {
+                const rowBg = idx < 3 ? 'style="background-color: ' + (window.elementSdk?.config?.secondary_color || defaultConfig.secondary_color) + '"' : '';
+                html += `
+                    <tr class="border-b hover:bg-gray-50" ${rowBg}>
+                        <td class="py-3 px-4 font-bold text-xl" style="color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
+                            ${idx + 1}
+                        </td>
+                        <td class="py-3 px-4 font-bold text-lg" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                            ${idx === 0 ? '👑 ' : ''}${s.team}
+                        </td>
+                        <td class="text-center py-3 px-4 font-bold text-2xl" style="color: ${window.elementSdk?.config?.accent_color || defaultConfig.accent_color}">
+                            ${s.points}
+                        </td>
+                        <td class="text-center py-3 px-4 font-semibold text-lg" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                            ${s.golds}
+                        </td>
+                        <td class="text-center py-3 px-4 font-semibold text-lg" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                            ${s.silvers}
+                        </td>
+                        <td class="text-center py-3 px-4 font-semibold text-lg" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                            ${s.bronzes}
+                        </td>
+                    </tr>`;
+            });
+
+            html += `</tbody></table></div></div>`;
+            contentArea.innerHTML = html;
+        }
+
+        function renderBracket() {
+            const contentArea = document.getElementById('content-area');
+            const groupAWinner = getGroupWinner(currentSport, "Group A");
+            const groupARunnerUp = getGroupRunnerUp(currentSport, "Group A");
+            const groupBWinner = getGroupWinner(currentSport, "Group B");
+            const groupBRunnerUp = getGroupRunnerUp(currentSport, "Group B");
+
+            let html = `
+                <div class="mb-6">
+                    <h2 class="text-3xl font-bold mb-6 text-center" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                        ${currentSport} - Tournament Bracket
+                    </h2>`;
+
+            const groups = SPORTS_DATA[currentSport];
+            const groupATeams = groups["Group A"];
+            const groupBTeams = groups["Group B"];
+
+            const matchA1 = allMatches.find(m => 
+                m.sport === currentSport && m.group === "Group A" && 
+                m.team1 === groupATeams[0] && m.team2 === groupATeams[1]
+            );
+            const matchA2 = allMatches.find(m => 
+                m.sport === currentSport && m.group === "Group A" && 
+                m.team1 === groupATeams[2] && m.team2 === groupATeams[3]
+            );
+            const matchB1 = allMatches.find(m => 
+                m.sport === currentSport && m.group === "Group B" && 
+                m.team1 === groupBTeams[0] && m.team2 === groupBTeams[1]
+            );
+            const matchB2 = allMatches.find(m => 
+                m.sport === currentSport && m.group === "Group B" && 
+                m.team1 === groupBTeams[2] && m.team2 === groupBTeams[3]
+            );
+
+            html += `
+                <div class="overflow-x-auto pb-4">
+                    <div class="flex items-center justify-center gap-6 min-w-max">
+                        <div class="flex flex-col gap-6">
+                            <div class="text-center mb-2">
+                                <h3 class="text-lg font-bold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Group Stage</h3>
+                            </div>
+                            
+                            <div class="p-4 rounded-lg" style="background-color: ${window.elementSdk?.config?.secondary_color || defaultConfig.secondary_color}">
+                                <h4 class="text-md font-bold mb-3 text-center" style="color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
+                                    Group A
+                                </h4>
+                                <div class="space-y-3">
+                                    ${renderBracketMatch(matchA1 || {
+                                        match_id: generateMatchId(currentSport, "Group Stage", groupATeams[0], groupATeams[1]),
+                                        sport: currentSport,
+                                        group: "Group A",
+                                        stage: "Group Stage",
+                                        team1: groupATeams[0],
+                                        team2: groupATeams[1],
+                                        completed: false
+                                    })}
+                                    ${renderBracketMatch(matchA2 || {
+                                        match_id: generateMatchId(currentSport, "Group Stage", groupATeams[2], groupATeams[3]),
+                                        sport: currentSport,
+                                        group: "Group A",
+                                        stage: "Group Stage",
+                                        team1: groupATeams[2],
+                                        team2: groupATeams[3],
+                                        completed: false
+                                    })}
+                                </div>
+                            </div>
+
+                            <div class="p-4 rounded-lg" style="background-color: ${window.elementSdk?.config?.secondary_color || defaultConfig.secondary_color}">
+                                <h4 class="text-md font-bold mb-3 text-center" style="color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
+                                    Group B
+                                </h4>
+                                <div class="space-y-3">
+                                    ${renderBracketMatch(matchB1 || {
+                                        match_id: generateMatchId(currentSport, "Group Stage", groupBTeams[0], groupBTeams[1]),
+                                        sport: currentSport,
+                                        group: "Group B",
+                                        stage: "Group Stage",
+                                        team1: groupBTeams[0],
+                                        team2: groupBTeams[1],
+                                        completed: false
+                                    })}
+                                    ${renderBracketMatch(matchB2 || {
+                                        match_id: generateMatchId(currentSport, "Group Stage", groupBTeams[2], groupBTeams[3]),
+                                        sport: currentSport,
+                                        group: "Group B",
+                                        stage: "Group Stage",
+                                        team1: groupBTeams[2],
+                                        team2: groupBTeams[3],
+                                        completed: false
+                                    })}
+                                </div>
+                            </div>
+                        </div>`;
+
+            const semi1Match = allMatches.find(m => 
+                m.sport === currentSport && m.stage === "Semi Final 1"
+            );
+            const semi2Match = allMatches.find(m => 
+                m.sport === currentSport && m.stage === "Semi Final 2"
+            );
+            const finalMatch = allMatches.find(m => 
+                m.sport === currentSport && m.stage === "Final"
+            );
+
+            const semi1Winner = semi1Match?.completed ? semi1Match.winner : null;
+            const semi2Winner = semi2Match?.completed ? semi2Match.winner : null;
+            const champion = finalMatch?.completed ? finalMatch.winner : null;
+
+            const semi1Team1 = groupAWinner || "Winner Group A";
+            const semi1Team2 = groupBRunnerUp || "Runner-up Group B";
+            const semi2Team1 = groupBWinner || "Winner Group B";
+            const semi2Team2 = groupARunnerUp || "Runner-up Group A";
+            
+            const semi1HasPlaceholders = !groupAWinner || !groupBRunnerUp;
+            const semi2HasPlaceholders = !groupBWinner || !groupARunnerUp;
+
+            html += `
+                        <div class="flex flex-col justify-center">
+                            <div class="text-center mb-2">
+                                <h3 class="text-lg font-bold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Semi Finals</h3>
+                            </div>
+                            
+                            <div class="space-y-16 mt-4">
+                                <div class="bracket-connector">
+                                    ${renderBracketMatch(semi1Match || {
+                                        match_id: generateMatchId(currentSport, "Semi Final 1", semi1Team1, semi1Team2),
+                                        sport: currentSport,
+                                        group: "Semi Finals",
+                                        stage: "Semi Final 1",
+                                        team1: semi1Team1,
+                                        team2: semi1Team2,
+                                        completed: false,
+                                        isPlaceholder: semi1HasPlaceholders
+                                    }, !semi1HasPlaceholders)}
+                                </div>
+
+                                <div class="bracket-connector">
+                                    ${renderBracketMatch(semi2Match || {
+                                        match_id: generateMatchId(currentSport, "Semi Final 2", semi2Team1, semi2Team2),
+                                        sport: currentSport,
+                                        group: "Semi Finals",
+                                        stage: "Semi Final 2",
+                                        team1: semi2Team1,
+                                        team2: semi2Team2,
+                                        completed: false,
+                                        isPlaceholder: semi2HasPlaceholders
+                                    }, !semi2HasPlaceholders)}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col justify-center">
+                            <div class="text-center mb-2">
+                                <h3 class="text-lg font-bold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Final</h3>
+                            </div>
+                            
+                            <div class="mt-4 bracket-connector">
+                                ${renderBracketMatch(finalMatch || {
+                                    match_id: semi1Winner && semi2Winner ? generateMatchId(currentSport, "Final", semi1Winner, semi2Winner) : 'placeholder-final',
+                                    sport: currentSport,
+                                    group: "Final",
+                                    stage: "Final",
+                                    team1: semi1Winner || "Winner SF1",
+                                    team2: semi2Winner || "Winner SF2",
+                                    completed: false,
+                                    isPlaceholder: !semi1Winner || !semi2Winner
+                                }, semi1Winner && semi2Winner)}
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col justify-center">
+                            <div class="text-center mb-2">
+                                <h3 class="text-lg font-bold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Champion</h3>
+                            </div>
+                            
+                            <div class="p-6 rounded-lg border-4 text-center mt-4" style="background-color: ${window.elementSdk?.config?.secondary_color || defaultConfig.secondary_color}; border-color: ${champion ? window.elementSdk?.config?.accent_color || defaultConfig.accent_color : '#cbd5e1'}">
+                                <div class="text-5xl mb-3">🏆</div>
+                                <div class="text-2xl font-bold ${champion ? '' : 'placeholder-team'}" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                                    ${champion || "Tournament Winner"}
+                                </div>
+                                ${champion ? `
+                                <div class="text-sm mt-2 font-semibold" style="color: ${window.elementSdk?.config?.accent_color || defaultConfig.accent_color}">
+                                    90 Points
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+            contentArea.innerHTML = html;
+        }
+
+        function renderBracketMatch(match, canEnterScore = true) {
+            const isCompleted = match.completed;
+            const isPlaceholder = match.isPlaceholder;
+            const buttonColor = window.elementSdk?.config?.button_color || defaultConfig.button_color;
+            
+            return `
+                <div class="bracket-match">
+                    <div class="text-xs font-bold mb-2 text-center" style="color: ${window.elementSdk?.config?.accent_color || defaultConfig.accent_color}">
+                        ${match.stage}
+                    </div>
+                    <div class="space-y-2 mb-3">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-sm ${match.winner === match.team1 ? 'text-base' : ''} ${isPlaceholder ? 'placeholder-team' : ''}" 
+                                  style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                                ${match.winner === match.team1 ? '✓ ' : ''}${match.team1}
+                            </span>
+                            ${isCompleted ? `<span class="font-bold ml-2" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">${match.score1}</span>` : ''}
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-sm ${match.winner === match.team2 ? 'text-base' : ''} ${isPlaceholder ? 'placeholder-team' : ''}" 
+                                  style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                                ${match.winner === match.team2 ? '✓ ' : ''}${match.team2}
+                            </span>
+                            ${isCompleted ? `<span class="font-bold ml-2" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">${match.score2}</span>` : ''}
+                        </div>
+                    </div>
+                    ${match.match_date || match.match_time || match.venue ? `
+                        <div class="mb-2 text-xs space-y-1" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                            ${match.match_date ? `<div>📅 ${new Date(match.match_date).toLocaleDateString()}</div>` : ''}
+                            ${match.match_time ? `<div>⏰ ${match.match_time}</div>` : ''}
+                            ${match.venue ? `<div>📍 ${match.venue}</div>` : ''}
+                        </div>
+                    ` : ''}
+                    ${!isCompleted && !isPlaceholder && canEnterScore ? `
+                        <div class="flex gap-1">
+                            <button onclick="openScheduleModal('${match.match_id}')" 
+                                    class="flex-1 px-2 py-1.5 rounded-lg text-white text-xs font-semibold hover:opacity-90 transition-opacity"
+                                    style="background-color: ${window.elementSdk?.config?.accent_color || defaultConfig.accent_color}">
+                                📅 Set Schedule
+                            </button>
+                            <button onclick="openScoreModal('${match.match_id}')" 
+                                    class="flex-1 px-2 py-1.5 rounded-lg text-white text-xs font-semibold hover:opacity-90 transition-opacity"
+                                    style="background-color: ${buttonColor}">
+                                Enter Score
+                            </button>
+                        </div>
+                    ` : isPlaceholder ? `
+                        <div class="text-center py-2 text-xs" style="color: #94a3b8;">
+                            Awaiting group stage results
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function openScheduleModal(matchId) {
+            const match = allMatches.find(m => m.match_id === matchId) || 
+                         findMatchById(matchId);
+            
+            if (!match) return;
+
+            const modal = document.createElement('div');
+            modal.id = 'schedule-modal';
+            modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50';
+            modal.innerHTML = `
+                <div class="bg-white rounded-lg p-6 max-w-md w-full">
+                    <h3 class="text-2xl font-bold mb-4" style="color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
+                        Set Match Schedule
+                    </h3>
+                    <div class="mb-4">
+                        <label for="match-date" class="block mb-2 font-semibold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                            Match Date
+                        </label>
+                        <input type="date" id="match-date" value="${match.match_date || ''}"
+                               class="w-full px-4 py-2 border-2 rounded-lg" 
+                               style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
+                    </div>
+                    <div class="mb-4">
+                        <label for="match-time" class="block mb-2 font-semibold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                            Match Time
+                        </label>
+                        <input type="time" id="match-time" value="${match.match_time || ''}"
+                               class="w-full px-4 py-2 border-2 rounded-lg" 
+                               style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
+                    </div>
+                    <div class="mb-6">
+                        <label for="match-venue" class="block mb-2 font-semibold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                            Venue
+                        </label>
+                        <input type="text" id="match-venue" value="${match.venue || ''}" placeholder="Enter venue"
+                               class="w-full px-4 py-2 border-2 rounded-lg" 
+                               style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
+                    </div>
+                    <div class="flex gap-3">
+                        <button id="save-schedule" 
+                                class="flex-1 px-4 py-2 rounded-lg text-white font-semibold hover:opacity-90"
+                                style="background-color: ${window.elementSdk?.config?.button_color || defaultConfig.button_color}">
+                            Save Schedule
+                        </button>
+                        <button id="cancel-schedule" 
+                                class="flex-1 px-4 py-2 rounded-lg border-2 font-semibold hover:bg-gray-50"
+                                style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}; color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+
+            document.getElementById('save-schedule').addEventListener('click', async () => {
+                const matchDate = document.getElementById('match-date').value;
+                const matchTime = document.getElementById('match-time').value;
+                const venue = document.getElementById('match-venue').value;
+
+                const saveButton = document.getElementById('save-schedule');
+                saveButton.disabled = true;
+                saveButton.innerHTML = 'Saving...<span class="loading-spinner"></span>';
+
+                const updatedMatch = {
+                    ...match,
+                    match_date: matchDate,
+                    match_time: matchTime,
+                    venue: venue
+                };
+
+                const existingMatch = allMatches.find(m => m.match_id === matchId);
+                let result;
+
+                if (existingMatch && existingMatch.__backendId) {
+                    result = await window.dataSdk.update({ ...existingMatch, ...updatedMatch });
+                } else {
+                    result = await window.dataSdk.create(updatedMatch);
+                }
+
+                if (result.isOk) {
+                    const modalEl = document.getElementById('schedule-modal');
+                    if (modalEl) document.body.removeChild(modalEl);
+                    showToast('Schedule saved successfully!', 'success');
+                } else {
+                    saveButton.disabled = false;
+                    saveButton.textContent = 'Save Schedule';
+                    showToast('Failed to save schedule. Please try again.', 'error');
+                }
+            });
+
+            document.getElementById('cancel-schedule').addEventListener('click', () => {
+                const modalEl = document.getElementById('schedule-modal');
+                if (modalEl) document.body.removeChild(modalEl);
+            });
+        }
+
+        const SPORT_SCORE_CONFIG = {
+            "Cricket": {
+                label: "Runs/Wickets",
+                placeholder: "e.g., 245/8",
+                requiresSpecialInput: true
+            },
+            "Football": {
+                label: "Goals",
+                placeholder: "e.g., 3"
+            },
+            "Handball": {
+                label: "Goals",
+                placeholder: "e.g., 25"
+            },
+            "Tug of War (Female)": {
+                label: "Points",
+                placeholder: "e.g., 3"
+            },
+            "Volleyball": {
+                label: "Sets Won",
+                placeholder: "Best of 3"
+            },
+            "Table Tennis": {
+                label: "Games Won",
+                placeholder: "Best of 5"
+            },
+            "Badminton": {
+                label: "Games Won",
+                placeholder: "Best of 5"
+            },
+            "Carrom": {
+                label: "Boards Won",
+                placeholder: "Best of 3"
+            },
+            "Chess": {
+                label: "Points",
+                placeholder: "1 for win"
+            },
+            "Tug of War (Male)": {
+                label: "Points",
+                placeholder: "e.g., 3"
+            }
+        };
+
+        function openScoreModal(matchId) {
+            const match = allMatches.find(m => m.match_id === matchId) || 
+                         findMatchById(matchId);
+            
+            if (!match) {
+                showToast('Match not found', 'error');
+                return;
+            }
+
+            const scoreConfig = SPORT_SCORE_CONFIG[match.sport] || { label: "Score", placeholder: "0" };
+
+            const modal = document.createElement('div');
+            modal.id = 'score-modal';
+            modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50';
+            
+            let scoreInputsHTML = '';
+            
+            if (match.sport === "Cricket") {
+                scoreInputsHTML = `
+                    <div class="mb-4">
+                        <label class="block mb-2 font-semibold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                            ${match.team1}
+                        </label>
+                        <div class="flex gap-2">
+                            <div class="flex-1">
+                                <input type="number" id="score1-runs" placeholder="Runs" min="0"
+                                       class="w-full px-4 py-2 border-2 rounded-lg" 
+                                       style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
+                                <span class="text-xs" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Runs</span>
+                            </div>
+                            <div class="flex-1">
+                                <input type="number" id="score1-wickets" placeholder="Wickets" min="0" max="10"
+                                       class="w-full px-4 py-2 border-2 rounded-lg" 
+                                       style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
+                                <span class="text-xs" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Wickets</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-6">
+                        <label class="block mb-2 font-semibold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                            ${match.team2}
+                        </label>
+                        <div class="flex gap-2">
+                            <div class="flex-1">
+                                <input type="number" id="score2-runs" placeholder="Runs" min="0"
+                                       class="w-full px-4 py-2 border-2 rounded-lg" 
+                                       style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
+                                <span class="text-xs" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Runs</span>
+                            </div>
+                            <div class="flex-1">
+                                <input type="number" id="score2-wickets" placeholder="Wickets" min="0" max="10"
+                                       class="w-full px-4 py-2 border-2 rounded-lg" 
+                                       style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
+                                <span class="text-xs" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Wickets</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                scoreInputsHTML = `
+                    <div class="mb-4">
+                        <label class="block mb-2 font-semibold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                            ${match.team1}
+                        </label>
+                        <input type="text" id="score1" value="" placeholder="${scoreConfig.placeholder}"
+                               class="w-full px-4 py-2 border-2 rounded-lg" 
+                               style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
+                    </div>
+                    <div class="mb-6">
+                        <label class="block mb-2 font-semibold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                            ${match.team2}
+                        </label>
+                        <input type="text" id="score2" value="" placeholder="${scoreConfig.placeholder}"
+                               class="w-full px-4 py-2 border-2 rounded-lg" 
+                               style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
+                    </div>
+                `;
+            }
+            
+            modal.innerHTML = `
+                <div class="bg-white rounded-lg p-6 max-w-md w-full">
+                    <h3 class="text-2xl font-bold mb-4" style="color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
+                        Enter Match Score
+                    </h3>
+                    <div class="text-center mb-4 px-3 py-2 rounded-lg" style="background-color: ${window.elementSdk?.config?.secondary_color || defaultConfig.secondary_color}">
+                        <span class="font-semibold text-sm" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                            ${match.sport} - ${scoreConfig.label}
+                        </span>
+                    </div>
+                    ${scoreInputsHTML}
+                    <div class="flex gap-3">
+                        <button id="save-score" 
+                                class="flex-1 px-4 py-2 rounded-lg text-white font-semibold hover:opacity-90"
+                                style="background-color: ${window.elementSdk?.config?.button_color || defaultConfig.button_color}">
+                            Save Score
+                        </button>
+                        <button id="cancel-score" 
+                                class="flex-1 px-4 py-2 rounded-lg border-2 font-semibold hover:bg-gray-50"
+                                style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}; color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+
+            document.getElementById('save-score').addEventListener('click', async () => {
+                let score1Input, score2Input, displayScore1, displayScore2, winner, loser;
+                
+                if (match.sport === "Cricket") {
+                    const runs1 = document.getElementById('score1-runs').value.trim();
+                    const wickets1 = document.getElementById('score1-wickets').value.trim();
+                    const runs2 = document.getElementById('score2-runs').value.trim();
+                    const wickets2 = document.getElementById('score2-wickets').value.trim();
+                    
+                    if (!runs1 || !wickets1 || !runs2 || !wickets2) {
+                        showToast('Please enter runs and wickets for both teams', 'error');
+                        return;
+                    }
+                    
+                    const runsNum1 = parseInt(runs1);
+                    const runsNum2 = parseInt(runs2);
+                    
+                    if (isNaN(runsNum1) || isNaN(runsNum2)) {
+                        showToast('Please enter valid numbers', 'error');
+                        return;
+                    }
+                    
+                    if (runsNum1 === runsNum2) {
+                        showToast('Scores cannot be tied. Please enter different scores.', 'error');
+                        return;
+                    }
+                    
+                    displayScore1 = `${runs1}/${wickets1}`;
+                    displayScore2 = `${runs2}/${wickets2}`;
+                    winner = runsNum1 > runsNum2 ? match.team1 : match.team2;
+                    loser = runsNum1 > runsNum2 ? match.team2 : match.team1;
+                    
+                } else {
+                    score1Input = document.getElementById('score1').value.trim();
+                    score2Input = document.getElementById('score2').value.trim();
+
+                    if (score1Input === '' || score2Input === '') {
+                        showToast('Please enter scores for both teams', 'error');
+                        return;
+                    }
+
+                    if (score1Input === score2Input) {
+                        showToast('Scores cannot be tied. Please enter different scores.', 'error');
+                        return;
+                    }
+
+                    const num1 = parseFloat(score1Input);
+                    const num2 = parseFloat(score2Input);
+                    
+                    if (!isNaN(num1) && !isNaN(num2)) {
+                        displayScore1 = num1;
+                        displayScore2 = num2;
+                        winner = num1 > num2 ? match.team1 : match.team2;
+                        loser = num1 > num2 ? match.team2 : match.team1;
+                    } else {
+                        showToast('Please use numeric scores to determine winner', 'error');
+                        return;
+                    }
+                }
+
+                const saveButton = document.getElementById('save-score');
+                saveButton.disabled = true;
+                saveButton.innerHTML = 'Saving...<span class="loading-spinner"></span>';
+
+                const updatedMatch = {
+                    match_id: match.match_id,
+                    sport: match.sport,
+                    group: match.group,
+                    stage: match.stage,
+                    team1: match.team1,
+                    team2: match.team2,
+                    score1: displayScore1,
+                    score2: displayScore2,
+                    winner,
+                    loser,
+                    completed: true,
+                    match_date: match.match_date || new Date().toISOString().split('T')[0],
+                    match_time: match.match_time || '',
+                    venue: match.venue || ''
+                };
+
+                const existingMatch = allMatches.find(m => m.match_id === matchId);
+                let result;
+
+                if (existingMatch && existingMatch.__backendId) {
+                    result = await window.dataSdk.update({ ...existingMatch, ...updatedMatch });
+                } else {
+                    result = await window.dataSdk.create(updatedMatch);
+                }
+
+                if (result.isOk) {
+                    const modalEl = document.getElementById('score-modal');
+                    if (modalEl) document.body.removeChild(modalEl);
+                    showToast('Score saved successfully!', 'success');
+                } else {
+                    saveButton.disabled = false;
+                    saveButton.textContent = 'Save Score';
+                    showToast('Failed to save score. Please try again.', 'error');
+                }
+            });
+
+            document.getElementById('cancel-score').addEventListener('click', () => {
+                const modalEl = document.getElementById('score-modal');
+                if (modalEl) document.body.removeChild(modalEl);
+            });
+        }
+
+        function findMatchById(matchId) {
+            const parts = matchId.split('-');
+            
+            let sport = null;
+            for (const s of Object.keys(SPORTS_DATA)) {
+                if (matchId.toLowerCase().includes(s.toLowerCase().replace(/\s+/g, '-').replace(/[()]/g, ''))) {
+                    sport = s;
+                    break;
+                }
+            }
+            
+            if (!sport) return null;
+
+            if (matchId.includes('semi-final-1')) {
+                const groupAWinner = getGroupWinner(sport, "Group A");
+                const groupBRunnerUp = getGroupRunnerUp(sport, "Group B");
+                if (groupAWinner && groupBRunnerUp) {
+                    return {
+                        match_id: matchId,
+                        sport: sport,
+                        group: "Semi Finals",
+                        stage: "Semi Final 1",
+                        team1: groupAWinner,
+                        team2: groupBRunnerUp,
+                        completed: false
+                    };
+                }
+            } else if (matchId.includes('semi-final-2')) {
+                const groupBWinner = getGroupWinner(sport, "Group B");
+                const groupARunnerUp = getGroupRunnerUp(sport, "Group A");
+                if (groupBWinner && groupARunnerUp) {
+                    return {
+                        match_id: matchId,
+                        sport: sport,
+                        group: "Semi Finals",
+                        stage: "Semi Final 2",
+                        team1: groupBWinner,
+                        team2: groupARunnerUp,
+                        completed: false
+                    };
+                }
+            } else if (matchId.includes('final')) {
+                const semi1Match = allMatches.find(m => m.sport === sport && m.stage === "Semi Final 1" && m.completed);
+                const semi2Match = allMatches.find(m => m.sport === sport && m.stage === "Semi Final 2" && m.completed);
+                if (semi1Match && semi2Match) {
+                    return {
+                        match_id: matchId,
+                        sport: sport,
+                        group: "Final",
+                        stage: "Final",
+                        team1: semi1Match.winner,
+                        team2: semi2Match.winner,
+                        completed: false
+                    };
+                }
+            } else {
+                const groups = SPORTS_DATA[sport];
+                for (const [groupName, teams] of Object.entries(groups)) {
+                    const normalizedTeams = teams.map(t => t.toLowerCase().replace(/\s+/g, '-'));
+                    
+                    if (matchId.includes(normalizedTeams[0]) && matchId.includes(normalizedTeams[1])) {
+                        return {
+                            match_id: matchId,
+                            sport: sport,
+                            group: groupName,
+                            stage: "Group Stage",
+                            team1: teams[0],
+                            team2: teams[1],
+                            completed: false
+                        };
+                    }
+                    if (matchId.includes(normalizedTeams[2]) && matchId.includes(normalizedTeams[3])) {
+                        return {
+                            match_id: matchId,
+                            sport: sport,
+                            group: groupName,
+                            stage: "Group Stage",
+                            team1: teams[2],
+                            team2: teams[3],
+                            completed: false
+                        };
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        function showToast(message, type = 'info') {
+            const existingToast = document.querySelector('.toast-message');
+            if (existingToast) {
+                document.body.removeChild(existingToast);
+            }
+
+            const toast = document.createElement('div');
+            toast.className = 'toast-message fixed top-4 right-4 px-6 py-3 rounded-lg text-white font-semibold shadow-lg z-50';
+            const bgColor = type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6';
+            toast.style.backgroundColor = bgColor;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s';
+                setTimeout(() => {
+                    if (document.body.contains(toast)) {
+                        document.body.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        const dataHandler = {
+            onDataChanged(data) {
+                allMatches = data;
+                renderContent();
+            }
+        };
+
+        // Mock data SDK for local testing (when SDK is not available)
+        if (!window.dataSdk) {
+            console.log('Data SDK not available - using local storage fallback');
+            let localData = JSON.parse(localStorage.getItem('tournamentMatches') || '[]');
+            
+            window.dataSdk = {
+                init: async (handler) => {
+                    handler.onDataChanged(localData);
+                    return { isOk: true, isError: false };
+                },
+                create: async (record) => {
+                    record.__backendId = 'local_' + Date.now() + '_' + Math.random();
+                    localData.push(record);
+                    localStorage.setItem('tournamentMatches', JSON.stringify(localData));
+                    dataHandler.onDataChanged(localData);
+                    return { isOk: true, isError: false };
+                },
+                update: async (record) => {
+                    const index = localData.findIndex(m => m.__backendId === record.__backendId);
+                    if (index !== -1) {
+                        localData[index] = record;
+                        localStorage.setItem('tournamentMatches', JSON.stringify(localData));
+                        dataHandler.onDataChanged(localData);
+                    }
+                    return { isOk: true, isError: false };
+                },
+                delete: async (record) => {
+                    localData = localData.filter(m => m.__backendId !== record.__backendId);
+                    localStorage.setItem('tournamentMatches', JSON.stringify(localData));
+                    dataHandler.onDataChanged(localData);
+                    return { isOk: true, isError: false };
+                }
+            };
+        }
+
+        async function onConfigChange(config) {
+            document.getElementById('tournament-title').textContent = 
+                config.tournament_title || defaultConfig.tournament_title;
+            document.getElementById('tournament-subtitle').textContent = 
+                config.tournament_subtitle || defaultConfig.tournament_subtitle;
+            
+            const activeButton = document.querySelector('.nav-tab.shadow-lg');
+            if (activeButton) {
+                activeButton.style.backgroundColor = config.accent_color || defaultConfig.accent_color;
+            }
+            
+            renderSportTabs();
+            renderContent();
+        }
+
+        async function init() {
+            if (window.dataSdk) {
+                const result = await window.dataSdk.init(dataHandler);
+                if (!result.isOk) {
+                    console.error('Failed to initialize data SDK');
+                }
+            }
+
+            if (window.elementSdk) {
+                window.elementSdk.init({
+                    defaultConfig,
+                    onConfigChange,
+                    mapToCapabilities: (config) => ({
+                        recolorables: [
+                            {
+                                get: () => config.primary_color || defaultConfig.primary_color,
+                                set: (value) => {
+                                    config.primary_color = value;
+                                    window.elementSdk.setConfig({ primary_color: value });
+                                }
+                            },
+                            {
+                                get: () => config.secondary_color || defaultConfig.secondary_color,
+                                set: (value) => {
+                                    config.secondary_color = value;
+                                    window.elementSdk.setConfig({ secondary_color: value });
+                                }
+                            },
+                            {
+                                get: () => config.text_color || defaultConfig.text_color,
+                                set: (value) => {
+                                    config.text_color = value;
+                                    window.elementSdk.setConfig({ text_color: value });
+                                }
+                            },
+                            {
+                                get: () => config.accent_color || defaultConfig.accent_color,
+                                set: (value) => {
+                                    config.accent_color = value;
+                                    window.elementSdk.setConfig({ accent_color: value });
+                                }
+                            },
+                            {
+                                get: () => config.button_color || defaultConfig.button_color,
+                                set: (value) => {
+                                    config.button_color = value;
+                                    window.elementSdk.setConfig({ button_color: value });
+                                }
+                            }
+                        ],
+                        borderables: [],
+                        fontEditable: undefined,
+                        fontSizeable: undefined
+                    }),
+                    mapToEditPanelValues: (config) => new Map([
+                        ["tournament_title", config.tournament_title || defaultConfig.tournament_title],
+                        ["tournament_subtitle", config.tournament_subtitle || defaultConfig.tournament_subtitle]
+                    ])
+                });
+            }
+
+            setupViewToggle();
+            renderSportTabs();
+            renderContent();
+        }
+
+        init();
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9babc68ea463594e',t:'MTc2Nzg3NjE1NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
