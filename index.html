@@ -31,12 +31,265 @@
             100% { transform: rotate(360deg); }
         }
         .bracket-match {
-            background: white;
-            border: 2px solid #cbd5e1;
-            border-radius: 8px;
-            padding: 12px;
-            min-width: 200px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 3px solid;
+            border-image: linear-gradient(135deg, #3b82f6, #8b5cf6) 1;
+            border-radius: 12px;
+            padding: 16px;
+            min-width: 220px;
             position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .sport-bg-cricket { 
+            background: linear-gradient(135deg, rgba(220, 252, 231, 0.95) 0%, rgba(187, 247, 208, 0.95) 100%);
+            position: relative;
+        }
+        .sport-bg-cricket::before {
+            content: '🏏';
+            position: absolute;
+            font-size: 200px;
+            opacity: 0.15;
+            top: 50%;
+            left: 20%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+            pointer-events: none;
+        }
+        .sport-bg-cricket::after {
+            content: '🏏';
+            position: absolute;
+            font-size: 150px;
+            opacity: 0.1;
+            top: 30%;
+            right: 15%;
+            transform: rotate(25deg);
+            pointer-events: none;
+        }
+        
+        .sport-bg-football { 
+            background: linear-gradient(135deg, rgba(219, 234, 254, 0.95) 0%, rgba(191, 219, 254, 0.95) 100%);
+            position: relative;
+        }
+        .sport-bg-football::before {
+            content: '⚽';
+            position: absolute;
+            font-size: 200px;
+            opacity: 0.15;
+            top: 50%;
+            left: 20%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+        .sport-bg-football::after {
+            content: '⚽';
+            position: absolute;
+            font-size: 150px;
+            opacity: 0.1;
+            top: 30%;
+            right: 15%;
+            pointer-events: none;
+        }
+        
+        .sport-bg-handball { 
+            background: linear-gradient(135deg, rgba(252, 231, 243, 0.95) 0%, rgba(251, 207, 232, 0.95) 100%);
+            position: relative;
+        }
+        .sport-bg-handball::before {
+            content: '🤾';
+            position: absolute;
+            font-size: 200px;
+            opacity: 0.15;
+            top: 50%;
+            left: 20%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+        .sport-bg-handball::after {
+            content: '🤾';
+            position: absolute;
+            font-size: 150px;
+            opacity: 0.1;
+            top: 30%;
+            right: 15%;
+            pointer-events: none;
+        }
+        
+        .sport-bg-volleyball { 
+            background: linear-gradient(135deg, rgba(254, 243, 199, 0.95) 0%, rgba(253, 230, 138, 0.95) 100%);
+            position: relative;
+        }
+        .sport-bg-volleyball::before {
+            content: '🏐';
+            position: absolute;
+            font-size: 200px;
+            opacity: 0.15;
+            top: 50%;
+            left: 20%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+        .sport-bg-volleyball::after {
+            content: '🏐';
+            position: absolute;
+            font-size: 150px;
+            opacity: 0.1;
+            top: 30%;
+            right: 15%;
+            pointer-events: none;
+        }
+        
+        .sport-bg-table-tennis { 
+            background: linear-gradient(135deg, rgba(224, 231, 255, 0.95) 0%, rgba(199, 210, 254, 0.95) 100%);
+            position: relative;
+        }
+        .sport-bg-table-tennis::before {
+            content: '🏓';
+            position: absolute;
+            font-size: 200px;
+            opacity: 0.15;
+            top: 50%;
+            left: 20%;
+            transform: translate(-50%, -50%) rotate(20deg);
+            pointer-events: none;
+        }
+        .sport-bg-table-tennis::after {
+            content: '🏓';
+            position: absolute;
+            font-size: 150px;
+            opacity: 0.1;
+            top: 30%;
+            right: 15%;
+            transform: rotate(-20deg);
+            pointer-events: none;
+        }
+        
+        .sport-bg-badminton { 
+            background: linear-gradient(135deg, rgba(254, 215, 170, 0.95) 0%, rgba(253, 186, 116, 0.95) 100%);
+            position: relative;
+        }
+        .sport-bg-badminton::before {
+            content: '🏸';
+            position: absolute;
+            font-size: 200px;
+            opacity: 0.15;
+            top: 50%;
+            left: 20%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            pointer-events: none;
+        }
+        .sport-bg-badminton::after {
+            content: '🏸';
+            position: absolute;
+            font-size: 150px;
+            opacity: 0.1;
+            top: 30%;
+            right: 15%;
+            transform: rotate(30deg);
+            pointer-events: none;
+        }
+        
+        .sport-bg-carrom { 
+            background: linear-gradient(135deg, rgba(254, 202, 202, 0.95) 0%, rgba(252, 165, 165, 0.95) 100%);
+            position: relative;
+        }
+        .sport-bg-carrom::before {
+            content: '🎯';
+            position: absolute;
+            font-size: 200px;
+            opacity: 0.15;
+            top: 50%;
+            left: 20%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+        .sport-bg-carrom::after {
+            content: '🎯';
+            position: absolute;
+            font-size: 150px;
+            opacity: 0.1;
+            top: 30%;
+            right: 15%;
+            pointer-events: none;
+        }
+        
+        .sport-bg-chess { 
+            background: linear-gradient(135deg, rgba(229, 231, 235, 0.95) 0%, rgba(209, 213, 219, 0.95) 100%);
+            position: relative;
+        }
+        .sport-bg-chess::before {
+            content: '♟️';
+            position: absolute;
+            font-size: 200px;
+            opacity: 0.15;
+            top: 50%;
+            left: 20%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+        .sport-bg-chess::after {
+            content: '♞';
+            position: absolute;
+            font-size: 150px;
+            opacity: 0.1;
+            top: 30%;
+            right: 15%;
+            pointer-events: none;
+        }
+        
+        .sport-bg-tug-female { 
+            background: linear-gradient(135deg, rgba(250, 232, 255, 0.95) 0%, rgba(245, 208, 254, 0.95) 100%);
+            position: relative;
+        }
+        .sport-bg-tug-female::before {
+            content: '💪';
+            position: absolute;
+            font-size: 200px;
+            opacity: 0.15;
+            top: 50%;
+            left: 20%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+            pointer-events: none;
+        }
+        .sport-bg-tug-female::after {
+            content: '💪';
+            position: absolute;
+            font-size: 150px;
+            opacity: 0.1;
+            top: 30%;
+            right: 15%;
+            transform: rotate(15deg);
+            pointer-events: none;
+        }
+        
+        .sport-bg-tug-male { 
+            background: linear-gradient(135deg, rgba(209, 250, 229, 0.95) 0%, rgba(167, 243, 208, 0.95) 100%);
+            position: relative;
+        }
+        .sport-bg-tug-male::before {
+            content: '💪';
+            position: absolute;
+            font-size: 200px;
+            opacity: 0.15;
+            top: 50%;
+            left: 20%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+            pointer-events: none;
+        }
+        .sport-bg-tug-male::after {
+            content: '💪';
+            position: absolute;
+            font-size: 150px;
+            opacity: 0.1;
+            top: 30%;
+            right: 15%;
+            transform: rotate(15deg);
+            pointer-events: none;
+        }
+        
+        .bracket-match:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
         }
         .bracket-connector {
             position: relative;
@@ -44,20 +297,38 @@
         .bracket-connector::after {
             content: '';
             position: absolute;
-            right: -40px;
+            right: -45px;
             top: 50%;
-            width: 40px;
-            height: 2px;
-            background-color: #cbd5e1;
+            width: 45px;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            border-radius: 2px;
         }
         .bracket-connector::before {
-            content: '   ';
+            content: '▶';
             position: absolute;
-            right: -42px;
+            right: -50px;
             top: 50%;
             transform: translateY(-50%);
-            color: #cbd5e1;
-            font-size: 12px;
+            color: #8b5cf6;
+            font-size: 16px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .stage-badge {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-block;
+            box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
         }
         .placeholder-team {
             color: #94a3b8;
@@ -68,6 +339,26 @@
         }
         .nav-tab:hover {
             transform: translateY(-2px);
+        }
+        .team-logo {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+            border-radius: 6px;
+            background: white;
+            padding: 3px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .team-logo-large {
+            width: 56px;
+            height: 56px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: white;
+            padding: 4px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
     </style>
   <style>@view-transition { navigation: auto; }</style>
@@ -82,9 +373,9 @@
     <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-6">
      <div id="sport-tabs" class="flex flex-wrap gap-2 justify-center"></div>
     </div><!-- View Toggle -->
-    <div class="flex justify-center gap-4 mb-6"><button id="view-bracket" class="nav-tab px-6 py-3 rounded-lg font-bold text-white shadow-lg"> 🏆 Sport Schedules </button> <button id="view-overall" class="nav-tab px-6 py-3 rounded-lg font-bold bg-white/20 text-white hover:bg-white/30">    Overall Standings </button>
+    <div class="flex flex-col sm:flex-row justify-center gap-3 md:gap-4 mb-4 md:mb-6"><button id="view-bracket" class="nav-tab px-4 md:px-6 py-2 md:py-3 rounded-lg font-bold text-white shadow-lg text-sm md:text-base"> 🏆 Sport Schedules </button> <button id="view-overall" class="nav-tab px-4 md:px-6 py-2 md:py-3 rounded-lg font-bold bg-white/20 text-white hover:bg-white/30 text-sm md:text-base"> 📊 Overall Standings </button>
     </div><!-- Content Area -->
-    <div id="content-area" class="bg-white rounded-lg shadow-2xl p-6"></div>
+    <div id="content-area" class="bg-white rounded-lg shadow-2xl p-3 md:p-6"></div>
    </div>
   </div>
   <script>
@@ -142,8 +433,39 @@
             secondary_color: "#dbeafe",
             text_color: "#1e3a8a",
             accent_color: "#3b82f6",
-            button_color: "#2563eb"
+            button_color: "#2563eb",
+            admin_password: "Aem@TSM2026"
         };
+
+        const SPORT_ICONS = {
+            "Cricket": "🏏",
+            "Football": "⚽",
+            "Handball": "🤾",
+            "Volleyball": "🏐",
+            "Table Tennis": "🏓",
+            "Badminton": "🏸",
+            "Carrom": "🎯",
+            "Chess": "♟️",
+            "Tug of War (Female)": "💪",
+            "Tug of War (Male)": "💪"
+        };
+
+        const TEAM_LOGOS = {
+            "Project Falcons": "https://img.freepik.com/premium-vector/falcon-logo-freedom-concept_663736-248.jpg",
+            "Power Predators": "https://static.vecteezy.com/system/resources/thumbnails/015/733/738/small_2x/pro-player-predator-esport-gaming-logo-vector.jpg",
+            "Central Stallions": "https://img.freepik.com/premium-vector/stallion-mascot-logo_183875-95.jpg",
+            "Steel Lions": "https://thumbs.dreamstime.com/b/crown-gold-lion-logo-company-premium-mascot-vector-your-store-195534289.jpg",
+            "Voltage Vipers": "https://t4.ftcdn.net/jpg/02/86/02/41/360_F_286024133_QfuNqgS6TwNAOcdiJu3DdSa4Vvz6tmP9.jpg",
+            "Vayu Warriors": "https://www.shutterstock.com/image-vector/hanuman-face-vector-monkey-illustration-260nw-2499957515.jpg",
+            "Iron Titans": "https://www.pinclipart.com/picdir/middle/568-5688628_titans-logo-clipart.png",
+            "Tech Thunder": "https://img.freepik.com/premium-photo/logo-flash-symbol-with-lightning-coming-out-it-suitable-technology-energy-concepts_153912-142464.jpg"
+        };
+
+        function getTeamLogoHTML(teamName, sizeClass = 'team-logo') {
+            const logoUrl = TEAM_LOGOS[teamName];
+            if (!logoUrl) return '';
+            return `<img src="${logoUrl}" alt="${teamName}" class="${sizeClass}" onerror="this.style.display='none'">`;
+        }
 
         function generateMatchId(sport, stage, team1, team2) {
             return `${sport}-${stage}-${team1}-${team2}`.replace(/\s+/g, '-').replace(/[()]/g, '').toLowerCase();
@@ -297,19 +619,6 @@
             return standings.sort((a, b) => b.points - a.points || b.golds - a.golds || b.silvers - a.silvers);
         }
 
-        const SPORT_ICONS = {
-            "Cricket": "🏏",
-            "Football": "⚽",
-            "Handball": "🤾",
-            "Volleyball": "🏐",
-            "Table Tennis": "🏓",
-            "Badminton": "🏸",
-            "Carrom": "🎯",
-            "Chess": "♟️",
-            "Tug of War (Female)": "💪",
-            "Tug of War (Male)": "💪"
-        };
-
         function renderSportTabs() {
             const tabsContainer = document.getElementById('sport-tabs');
             tabsContainer.innerHTML = '';
@@ -318,7 +627,7 @@
                 const button = document.createElement('button');
                 const icon = SPORT_ICONS[sport] || '🏆';
                 button.textContent = `${icon} ${sport}`;
-                button.className = `px-4 py-2 rounded-lg font-semibold transition-all ${
+                button.className = `px-3 md:px-4 py-1.5 md:py-2 rounded-lg font-semibold transition-all text-sm md:text-base whitespace-nowrap flex-shrink-0 ${
                     currentSport === sport 
                         ? 'text-white shadow-lg' 
                         : 'bg-white/20 text-white hover:bg-white/30'
@@ -373,24 +682,24 @@
 
             let html = `
                 <div class="mb-6">
-                    <h2 class="text-4xl font-bold mb-6 text-center" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                    <h2 class="text-2xl md:text-4xl font-bold mb-4 md:mb-6 text-center" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
                         🏆 Overall Championship Standings
                     </h2>
-                    <div class="mb-4 p-4 rounded-lg" style="background-color: ${window.elementSdk?.config?.secondary_color || defaultConfig.secondary_color}">
-                        <p class="text-sm font-semibold mb-2" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                    <div class="mb-4 p-3 md:p-4 rounded-lg" style="background-color: ${window.elementSdk?.config?.secondary_color || defaultConfig.secondary_color}">
+                        <p class="text-xs md:text-sm font-semibold mb-2" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
                             Points System: 🥇 Winner = 90 pts | 🥈 Runner-up = 60 pts | 🥉 3rd Place = 45 pts | Participation = 30 pts
                         </p>
                     </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
+                    <div class="overflow-x-auto -mx-3 md:mx-0">
+                        <table class="w-full min-w-[500px]">
                             <thead>
                                 <tr class="border-b-4" style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
-                                    <th class="text-left py-3 px-4 font-bold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Rank</th>
-                                    <th class="text-left py-3 px-4 font-bold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Team</th>
-                                    <th class="text-center py-3 px-4 font-bold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Total Points</th>
-                                    <th class="text-center py-3 px-4 font-bold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">🥇</th>
-                                    <th class="text-center py-3 px-4 font-bold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">🥈</th>
-                                    <th class="text-center py-3 px-4 font-bold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">🥉</th>
+                                    <th class="text-left py-2 md:py-3 px-2 md:px-4 font-bold text-sm md:text-base" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Rank</th>
+                                    <th class="text-left py-2 md:py-3 px-2 md:px-4 font-bold text-sm md:text-base" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Team</th>
+                                    <th class="text-center py-2 md:py-3 px-2 md:px-4 font-bold text-sm md:text-base" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Total Points</th>
+                                    <th class="text-center py-2 md:py-3 px-2 md:px-4 font-bold text-sm md:text-base" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">🥇</th>
+                                    <th class="text-center py-2 md:py-3 px-2 md:px-4 font-bold text-sm md:text-base" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">🥈</th>
+                                    <th class="text-center py-2 md:py-3 px-2 md:px-4 font-bold text-sm md:text-base" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">🥉</th>
                                 </tr>
                             </thead>
                             <tbody>`;
@@ -399,22 +708,27 @@
                 const rowBg = idx < 3 ? 'style="background-color: ' + (window.elementSdk?.config?.secondary_color || defaultConfig.secondary_color) + '"' : '';
                 html += `
                     <tr class="border-b hover:bg-gray-50" ${rowBg}>
-                        <td class="py-3 px-4 font-bold text-xl" style="color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
+                        <td class="py-2 md:py-3 px-2 md:px-4 font-bold text-lg md:text-xl" style="color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
                             ${idx + 1}
                         </td>
-                        <td class="py-3 px-4 font-bold text-lg" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
-                            ${idx === 0 ? '👑 ' : ''}${s.team}
+                        <td class="py-2 md:py-3 px-2 md:px-4">
+                            <div class="flex items-center gap-2">
+                                ${getTeamLogoHTML(s.team, 'team-logo')}
+                                <span class="font-bold text-sm md:text-lg" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                                    ${idx === 0 ? '🏆 ' : ''}${s.team}
+                                </span>
+                            </div>
                         </td>
-                        <td class="text-center py-3 px-4 font-bold text-2xl" style="color: ${window.elementSdk?.config?.accent_color || defaultConfig.accent_color}">
+                        <td class="text-center py-2 md:py-3 px-2 md:px-4 font-bold text-xl md:text-2xl" style="color: ${window.elementSdk?.config?.accent_color || defaultConfig.accent_color}">
                             ${s.points}
                         </td>
-                        <td class="text-center py-3 px-4 font-semibold text-lg" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                        <td class="text-center py-2 md:py-3 px-2 md:px-4 font-semibold text-base md:text-lg" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
                             ${s.golds}
                         </td>
-                        <td class="text-center py-3 px-4 font-semibold text-lg" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                        <td class="text-center py-2 md:py-3 px-2 md:px-4 font-semibold text-base md:text-lg" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
                             ${s.silvers}
                         </td>
-                        <td class="text-center py-3 px-4 font-semibold text-lg" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                        <td class="text-center py-2 md:py-3 px-2 md:px-4 font-semibold text-base md:text-lg" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
                             ${s.bronzes}
                         </td>
                     </tr>`;
@@ -424,15 +738,29 @@
             contentArea.innerHTML = html;
         }
 
+        const SPORT_BG_CLASSES = {
+            "Cricket": "sport-bg-cricket",
+            "Football": "sport-bg-football",
+            "Handball": "sport-bg-handball",
+            "Volleyball": "sport-bg-volleyball",
+            "Table Tennis": "sport-bg-table-tennis",
+            "Badminton": "sport-bg-badminton",
+            "Carrom": "sport-bg-carrom",
+            "Chess": "sport-bg-chess",
+            "Tug of War (Female)": "sport-bg-tug-female",
+            "Tug of War (Male)": "sport-bg-tug-male"
+        };
+
         function renderBracket() {
             const contentArea = document.getElementById('content-area');
             const groupAWinner = getGroupWinner(currentSport, "Group A");
             const groupARunnerUp = getGroupRunnerUp(currentSport, "Group A");
             const groupBWinner = getGroupWinner(currentSport, "Group B");
             const groupBRunnerUp = getGroupRunnerUp(currentSport, "Group B");
+            const sportBgClass = SPORT_BG_CLASSES[currentSport] || '';
 
             let html = `
-                <div class="mb-6">
+                <div class="mb-6 p-6 rounded-xl ${sportBgClass}">
                     <h2 class="text-3xl font-bold mb-6 text-center" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
                         ${currentSport} - Tournament Bracket
                     </h2>`;
@@ -459,15 +787,15 @@
             );
 
             html += `
-                <div class="overflow-x-auto pb-4">
-                    <div class="flex items-center justify-center gap-6 min-w-max">
-                        <div class="flex flex-col gap-6">
+                <div class="overflow-x-auto pb-4 -mx-3 md:mx-0">
+                    <div class="flex items-center justify-center gap-3 md:gap-6 min-w-max px-3 md:px-0">
+                        <div class="flex flex-col gap-4 md:gap-6">
                             <div class="text-center mb-2">
-                                <h3 class="text-lg font-bold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Group Stage</h3>
+                                <h3 class="text-sm md:text-lg font-bold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Group Stage</h3>
                             </div>
                             
-                            <div class="p-4 rounded-lg" style="background-color: ${window.elementSdk?.config?.secondary_color || defaultConfig.secondary_color}">
-                                <h4 class="text-md font-bold mb-3 text-center" style="color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
+                            <div class="p-3 md:p-4 rounded-lg" style="background-color: ${window.elementSdk?.config?.secondary_color || defaultConfig.secondary_color}">
+                                <h4 class="text-sm md:text-md font-bold mb-3 text-center" style="color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
                                     Group A
                                 </h4>
                                 <div class="space-y-3">
@@ -492,8 +820,8 @@
                                 </div>
                             </div>
 
-                            <div class="p-4 rounded-lg" style="background-color: ${window.elementSdk?.config?.secondary_color || defaultConfig.secondary_color}">
-                                <h4 class="text-md font-bold mb-3 text-center" style="color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
+                            <div class="p-3 md:p-4 rounded-lg" style="background-color: ${window.elementSdk?.config?.secondary_color || defaultConfig.secondary_color}">
+                                <h4 class="text-sm md:text-md font-bold mb-3 text-center" style="color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
                                     Group B
                                 </h4>
                                 <div class="space-y-3">
@@ -544,10 +872,10 @@
             html += `
                         <div class="flex flex-col justify-center">
                             <div class="text-center mb-2">
-                                <h3 class="text-lg font-bold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Semi Finals</h3>
+                                <h3 class="text-sm md:text-lg font-bold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Semi Finals</h3>
                             </div>
                             
-                            <div class="space-y-16 mt-4">
+                            <div class="space-y-12 md:space-y-16 mt-4">
                                 <div class="bracket-connector">
                                     ${renderBracketMatch(semi1Match || {
                                         match_id: generateMatchId(currentSport, "Semi Final 1", semi1Team1, semi1Team2),
@@ -578,7 +906,7 @@
 
                         <div class="flex flex-col justify-center">
                             <div class="text-center mb-2">
-                                <h3 class="text-lg font-bold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Final</h3>
+                                <h3 class="text-sm md:text-lg font-bold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Final</h3>
                             </div>
                             
                             <div class="mt-4 bracket-connector">
@@ -597,17 +925,21 @@
 
                         <div class="flex flex-col justify-center">
                             <div class="text-center mb-2">
-                                <h3 class="text-lg font-bold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Champion</h3>
+                                <h3 class="text-sm md:text-lg font-bold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Champion</h3>
                             </div>
                             
-                            <div class="p-6 rounded-lg border-4 text-center mt-4" style="background-color: ${window.elementSdk?.config?.secondary_color || defaultConfig.secondary_color}; border-color: ${champion ? window.elementSdk?.config?.accent_color || defaultConfig.accent_color : '#cbd5e1'}">
-                                <div class="text-5xl mb-3">🏆</div>
-                                <div class="text-2xl font-bold ${champion ? '' : 'placeholder-team'}" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                            <div class="p-6 md:p-8 rounded-2xl border-4 text-center mt-4 relative overflow-hidden" style="background: ${champion ? 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)' : window.elementSdk?.config?.secondary_color || defaultConfig.secondary_color}; border-color: ${champion ? '#f59e0b' : '#cbd5e1'}; box-shadow: ${champion ? '0 8px 24px rgba(245, 158, 11, 0.3)' : 'none'}">
+                                ${champion ? `
+                                    <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-yellow-400 via-amber-500 to-yellow-400"></div>
+                                    <div class="text-5xl mb-3 animate-bounce">🏆</div>
+                                    ${getTeamLogoHTML(champion, 'team-logo-large')}
+                                ` : '<div class="text-4xl md:text-5xl mb-3">🏆</div>'}
+                                <div class="text-lg md:text-2xl font-bold mt-3 ${champion ? '' : 'placeholder-team'}" style="color: ${champion ? '#92400e' : window.elementSdk?.config?.text_color || defaultConfig.text_color}">
                                     ${champion || "Tournament Winner"}
                                 </div>
                                 ${champion ? `
-                                <div class="text-sm mt-2 font-semibold" style="color: ${window.elementSdk?.config?.accent_color || defaultConfig.accent_color}">
-                                    90 Points
+                                <div class="mt-3 inline-block px-4 py-2 rounded-full font-bold text-sm" style="background-color: #f59e0b; color: white;">
+                                    ⭐ 90 Championship Points ⭐
                                 </div>
                                 ` : ''}
                             </div>
@@ -625,38 +957,46 @@
             
             return `
                 <div class="bracket-match">
-                    <div class="text-xs font-bold mb-2 text-center" style="color: ${window.elementSdk?.config?.accent_color || defaultConfig.accent_color}">
-                        ${match.stage}
+                    <div class="text-center mb-3">
+                        <span class="stage-badge">
+                            ${match.stage}
+                        </span>
                     </div>
                     <div class="space-y-2 mb-3">
-                        <div class="flex items-center justify-between">
-                            <span class="font-bold text-sm ${match.winner === match.team1 ? 'text-base' : ''} ${isPlaceholder ? 'placeholder-team' : ''}" 
-                                  style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
-                                ${match.winner === match.team1 ? '✓ ' : ''}${match.team1}
-                            </span>
-                            ${isCompleted ? `<span class="font-bold ml-2" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">${match.score1}</span>` : ''}
+                        <div class="flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-2 min-w-0 flex-1">
+                                ${!isPlaceholder ? getTeamLogoHTML(match.team1, 'team-logo') : ''}
+                                <span class="font-bold text-xs md:text-sm ${match.winner === match.team1 ? 'text-base' : ''} ${isPlaceholder ? 'placeholder-team' : ''} truncate" 
+                                      style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                                    ${match.winner === match.team1 ? '✓ ' : ''}${match.team1}
+                                </span>
+                            </div>
+                            ${isCompleted ? `<span class="font-bold flex-shrink-0 text-xs md:text-sm" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">${match.score1}</span>` : ''}
                         </div>
-                        <div class="flex items-center justify-between">
-                            <span class="font-bold text-sm ${match.winner === match.team2 ? 'text-base' : ''} ${isPlaceholder ? 'placeholder-team' : ''}" 
-                                  style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
-                                ${match.winner === match.team2 ? '✓ ' : ''}${match.team2}
-                            </span>
-                            ${isCompleted ? `<span class="font-bold ml-2" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">${match.score2}</span>` : ''}
+                        <div class="flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-2 min-w-0 flex-1">
+                                ${!isPlaceholder ? getTeamLogoHTML(match.team2, 'team-logo') : ''}
+                                <span class="font-bold text-xs md:text-sm ${match.winner === match.team2 ? 'text-base' : ''} ${isPlaceholder ? 'placeholder-team' : ''} truncate" 
+                                      style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                                    ${match.winner === match.team2 ? '✓ ' : ''}${match.team2}
+                                </span>
+                            </div>
+                            ${isCompleted ? `<span class="font-bold flex-shrink-0 text-xs md:text-sm" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">${match.score2}</span>` : ''}
                         </div>
                     </div>
                     ${match.match_date || match.match_time || match.venue ? `
                         <div class="mb-2 text-xs space-y-1" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
-                            ${match.match_date ? `<div>📅 ${new Date(match.match_date).toLocaleDateString()}</div>` : ''}
+                            ${match.match_date ? `<div class="truncate">📅 ${new Date(match.match_date).toLocaleDateString()}</div>` : ''}
                             ${match.match_time ? `<div>⏰ ${match.match_time}</div>` : ''}
-                            ${match.venue ? `<div>📍 ${match.venue}</div>` : ''}
+                            ${match.venue ? `<div class="truncate">📍 ${match.venue}</div>` : ''}
                         </div>
                     ` : ''}
                     ${!isCompleted && !isPlaceholder && canEnterScore ? `
-                        <div class="flex gap-1">
+                        <div class="flex flex-col md:flex-row gap-1">
                             <button onclick="openScheduleModal('${match.match_id}')" 
                                     class="flex-1 px-2 py-1.5 rounded-lg text-white text-xs font-semibold hover:opacity-90 transition-opacity"
                                     style="background-color: ${window.elementSdk?.config?.accent_color || defaultConfig.accent_color}">
-                                📅 Set Schedule
+                                📅 Schedule
                             </button>
                             <button onclick="openScoreModal('${match.match_id}')" 
                                     class="flex-1 px-2 py-1.5 rounded-lg text-white text-xs font-semibold hover:opacity-90 transition-opacity"
@@ -664,60 +1004,52 @@
                                 Enter Score
                             </button>
                         </div>
+                    ` : isCompleted && canEnterScore ? `
+                        <button onclick="openScoreModal('${match.match_id}')" 
+                                class="w-full px-2 py-1.5 rounded-lg text-white text-xs font-semibold hover:opacity-90 transition-opacity mt-2"
+                                style="background-color: ${window.elementSdk?.config?.accent_color || defaultConfig.accent_color}">
+                            ✏️ Edit Score
+                        </button>
                     ` : isPlaceholder ? `
                         <div class="text-center py-2 text-xs" style="color: #94a3b8;">
-                            Awaiting group stage results
+                            Awaiting results
                         </div>
                     ` : ''}
                 </div>
             `;
         }
 
-        function openScheduleModal(matchId) {
-            const match = allMatches.find(m => m.match_id === matchId) || 
-                         findMatchById(matchId);
-            
-            if (!match) return;
+        let isAuthenticated = false;
+        let authSessionTimeout = null;
 
-            const modal = document.createElement('div');
-            modal.id = 'schedule-modal';
-            modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50';
-            modal.innerHTML = `
+        function checkAuthentication(callback) {
+            if (isAuthenticated) {
+                callback();
+                return;
+            }
+
+            const authModal = document.createElement('div');
+            authModal.id = 'auth-modal';
+            authModal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50';
+            authModal.innerHTML = `
                 <div class="bg-white rounded-lg p-6 max-w-md w-full">
                     <h3 class="text-2xl font-bold mb-4" style="color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
-                        Set Match Schedule
+                        🔒 Admin Authentication Required
                     </h3>
-                    <div class="mb-4">
-                        <label for="match-date" class="block mb-2 font-semibold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
-                            Match Date
-                        </label>
-                        <input type="date" id="match-date" value="${match.match_date || ''}"
-                               class="w-full px-4 py-2 border-2 rounded-lg" 
-                               style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
-                    </div>
-                    <div class="mb-4">
-                        <label for="match-time" class="block mb-2 font-semibold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
-                            Match Time
-                        </label>
-                        <input type="time" id="match-time" value="${match.match_time || ''}"
-                               class="w-full px-4 py-2 border-2 rounded-lg" 
-                               style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
-                    </div>
-                    <div class="mb-6">
-                        <label for="match-venue" class="block mb-2 font-semibold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
-                            Venue
-                        </label>
-                        <input type="text" id="match-venue" value="${match.venue || ''}" placeholder="Enter venue"
-                               class="w-full px-4 py-2 border-2 rounded-lg" 
-                               style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
-                    </div>
+                    <p class="mb-4" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                        Enter the admin password to edit tournament data:
+                    </p>
+                    <input type="password" id="admin-password" placeholder="Enter password"
+                           class="w-full px-4 py-2 border-2 rounded-lg mb-4" 
+                           style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
+                    <div id="auth-error" class="text-red-600 text-sm mb-4 hidden">Incorrect password. Please try again.</div>
                     <div class="flex gap-3">
-                        <button id="save-schedule" 
+                        <button id="verify-password" 
                                 class="flex-1 px-4 py-2 rounded-lg text-white font-semibold hover:opacity-90"
                                 style="background-color: ${window.elementSdk?.config?.button_color || defaultConfig.button_color}">
-                            Save Schedule
+                            Verify
                         </button>
-                        <button id="cancel-schedule" 
+                        <button id="cancel-auth" 
                                 class="flex-1 px-4 py-2 rounded-lg border-2 font-semibold hover:bg-gray-50"
                                 style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}; color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
                             Cancel
@@ -726,47 +1058,143 @@
                 </div>
             `;
 
-            document.body.appendChild(modal);
+            document.body.appendChild(authModal);
 
-            document.getElementById('save-schedule').addEventListener('click', async () => {
-                const matchDate = document.getElementById('match-date').value;
-                const matchTime = document.getElementById('match-time').value;
-                const venue = document.getElementById('match-venue').value;
+            const passwordInput = document.getElementById('admin-password');
+            passwordInput.focus();
 
-                const saveButton = document.getElementById('save-schedule');
-                saveButton.disabled = true;
-                saveButton.innerHTML = 'Saving...<span class="loading-spinner"></span>';
-
-                const updatedMatch = {
-                    ...match,
-                    match_date: matchDate,
-                    match_time: matchTime,
-                    venue: venue
-                };
-
-                const existingMatch = allMatches.find(m => m.match_id === matchId);
-                let result;
-
-                if (existingMatch && existingMatch.__backendId) {
-                    result = await window.dataSdk.update({ ...existingMatch, ...updatedMatch });
-                } else {
-                    result = await window.dataSdk.create(updatedMatch);
-                }
-
-                if (result.isOk) {
-                    const modalEl = document.getElementById('schedule-modal');
-                    if (modalEl) document.body.removeChild(modalEl);
-                    showToast('Schedule saved successfully!', 'success');
-                } else {
-                    saveButton.disabled = false;
-                    saveButton.textContent = 'Save Schedule';
-                    showToast('Failed to save schedule. Please try again.', 'error');
+            passwordInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    document.getElementById('verify-password').click();
                 }
             });
 
-            document.getElementById('cancel-schedule').addEventListener('click', () => {
-                const modalEl = document.getElementById('schedule-modal');
+            document.getElementById('verify-password').addEventListener('click', () => {
+                const enteredPassword = passwordInput.value;
+                const correctPassword = window.elementSdk?.config?.admin_password || defaultConfig.admin_password;
+
+                if (enteredPassword === correctPassword) {
+                    isAuthenticated = true;
+                    
+                    if (authSessionTimeout) clearTimeout(authSessionTimeout);
+                    authSessionTimeout = setTimeout(() => {
+                        isAuthenticated = false;
+                        showToast('Session expired. Please authenticate again to make changes.', 'info');
+                    }, 15 * 60 * 1000);
+
+                    const modalEl = document.getElementById('auth-modal');
+                    if (modalEl) document.body.removeChild(modalEl);
+                    showToast('Authentication successful! Session valid for 15 minutes.', 'success');
+                    callback();
+                } else {
+                    document.getElementById('auth-error').classList.remove('hidden');
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                }
+            });
+
+            document.getElementById('cancel-auth').addEventListener('click', () => {
+                const modalEl = document.getElementById('auth-modal');
                 if (modalEl) document.body.removeChild(modalEl);
+            });
+        }
+
+        function openScheduleModal(matchId) {
+            checkAuthentication(() => {
+                const match = allMatches.find(m => m.match_id === matchId) || 
+                             findMatchById(matchId);
+                
+                if (!match) return;
+
+                const modal = document.createElement('div');
+                modal.id = 'schedule-modal';
+                modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50';
+                modal.innerHTML = `
+                    <div class="bg-white rounded-lg p-4 md:p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+                        <h3 class="text-xl md:text-2xl font-bold mb-4" style="color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
+                            Set Match Schedule
+                        </h3>
+                        <div class="mb-4">
+                            <label for="match-date" class="block mb-2 font-semibold text-sm md:text-base" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                                Match Date
+                            </label>
+                            <input type="date" id="match-date" value="${match.match_date || ''}"
+                                   class="w-full px-3 md:px-4 py-2 border-2 rounded-lg text-sm md:text-base" 
+                                   style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
+                        </div>
+                        <div class="mb-4">
+                            <label for="match-time" class="block mb-2 font-semibold text-sm md:text-base" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                                Match Time
+                            </label>
+                            <input type="time" id="match-time" value="${match.match_time || ''}"
+                                   class="w-full px-3 md:px-4 py-2 border-2 rounded-lg text-sm md:text-base" 
+                                   style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
+                        </div>
+                        <div class="mb-6">
+                            <label for="match-venue" class="block mb-2 font-semibold text-sm md:text-base" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                                Venue
+                            </label>
+                            <input type="text" id="match-venue" value="${match.venue || ''}" placeholder="Enter venue"
+                                   class="w-full px-3 md:px-4 py-2 border-2 rounded-lg text-sm md:text-base" 
+                                   style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <button id="save-schedule" 
+                                    class="flex-1 px-4 py-2 rounded-lg text-white font-semibold hover:opacity-90 text-sm md:text-base"
+                                    style="background-color: ${window.elementSdk?.config?.button_color || defaultConfig.button_color}">
+                                Save Schedule
+                            </button>
+                            <button id="cancel-schedule" 
+                                    class="flex-1 px-4 py-2 rounded-lg border-2 font-semibold hover:bg-gray-50 text-sm md:text-base"
+                                    style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}; color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                document.body.appendChild(modal);
+
+                document.getElementById('save-schedule').addEventListener('click', async () => {
+                    const matchDate = document.getElementById('match-date').value;
+                    const matchTime = document.getElementById('match-time').value;
+                    const venue = document.getElementById('match-venue').value;
+
+                    const saveButton = document.getElementById('save-schedule');
+                    saveButton.disabled = true;
+                    saveButton.innerHTML = 'Saving...<span class="loading-spinner"></span>';
+
+                    const updatedMatch = {
+                        ...match,
+                        match_date: matchDate,
+                        match_time: matchTime,
+                        venue: venue
+                    };
+
+                    const existingMatch = allMatches.find(m => m.match_id === matchId);
+                    let result;
+
+                    if (existingMatch && existingMatch.__backendId) {
+                        result = await window.dataSdk.update({ ...existingMatch, ...updatedMatch });
+                    } else {
+                        result = await window.dataSdk.create(updatedMatch);
+                    }
+
+                    if (result.isOk) {
+                        const modalEl = document.getElementById('schedule-modal');
+                        if (modalEl) document.body.removeChild(modalEl);
+                        showToast('Schedule saved successfully!', 'success');
+                    } else {
+                        saveButton.disabled = false;
+                        saveButton.textContent = 'Save Schedule';
+                        showToast('Failed to save schedule. Please try again.', 'error');
+                    }
+                });
+
+                document.getElementById('cancel-schedule').addEventListener('click', () => {
+                    const modalEl = document.getElementById('schedule-modal');
+                    if (modalEl) document.body.removeChild(modalEl);
+                });
             });
         }
 
@@ -815,13 +1243,14 @@
         };
 
         function openScoreModal(matchId) {
-            const match = allMatches.find(m => m.match_id === matchId) || 
-                         findMatchById(matchId);
-            
-            if (!match) {
-                showToast('Match not found', 'error');
-                return;
-            }
+            checkAuthentication(() => {
+                const match = allMatches.find(m => m.match_id === matchId) || 
+                             findMatchById(matchId);
+                
+                if (!match) {
+                    showToast('Match not found', 'error');
+                    return;
+                }
 
             const scoreConfig = SPORT_SCORE_CONFIG[match.sport] || { label: "Score", placeholder: "0" };
 
@@ -832,6 +1261,9 @@
             let scoreInputsHTML = '';
             
             if (match.sport === "Cricket") {
+                const score1Parts = match.score1 ? match.score1.split('/') : ['', ''];
+                const score2Parts = match.score2 ? match.score2.split('/') : ['', ''];
+                
                 scoreInputsHTML = `
                     <div class="mb-4">
                         <label class="block mb-2 font-semibold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
@@ -839,13 +1271,13 @@
                         </label>
                         <div class="flex gap-2">
                             <div class="flex-1">
-                                <input type="number" id="score1-runs" placeholder="Runs" min="0"
+                                <input type="number" id="score1-runs" placeholder="Runs" min="0" value="${score1Parts[0]}"
                                        class="w-full px-4 py-2 border-2 rounded-lg" 
                                        style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
                                 <span class="text-xs" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Runs</span>
                             </div>
                             <div class="flex-1">
-                                <input type="number" id="score1-wickets" placeholder="Wickets" min="0" max="10"
+                                <input type="number" id="score1-wickets" placeholder="Wickets" min="0" max="10" value="${score1Parts[1]}"
                                        class="w-full px-4 py-2 border-2 rounded-lg" 
                                        style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
                                 <span class="text-xs" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Wickets</span>
@@ -858,13 +1290,13 @@
                         </label>
                         <div class="flex gap-2">
                             <div class="flex-1">
-                                <input type="number" id="score2-runs" placeholder="Runs" min="0"
+                                <input type="number" id="score2-runs" placeholder="Runs" min="0" value="${score2Parts[0]}"
                                        class="w-full px-4 py-2 border-2 rounded-lg" 
                                        style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
                                 <span class="text-xs" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Runs</span>
                             </div>
                             <div class="flex-1">
-                                <input type="number" id="score2-wickets" placeholder="Wickets" min="0" max="10"
+                                <input type="number" id="score2-wickets" placeholder="Wickets" min="0" max="10" value="${score2Parts[1]}"
                                        class="w-full px-4 py-2 border-2 rounded-lg" 
                                        style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
                                 <span class="text-xs" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">Wickets</span>
@@ -878,7 +1310,7 @@
                         <label class="block mb-2 font-semibold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
                             ${match.team1}
                         </label>
-                        <input type="text" id="score1" value="" placeholder="${scoreConfig.placeholder}"
+                        <input type="text" id="score1" value="${match.score1 || ''}" placeholder="${scoreConfig.placeholder}"
                                class="w-full px-4 py-2 border-2 rounded-lg" 
                                style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
                     </div>
@@ -886,32 +1318,34 @@
                         <label class="block mb-2 font-semibold" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
                             ${match.team2}
                         </label>
-                        <input type="text" id="score2" value="" placeholder="${scoreConfig.placeholder}"
+                        <input type="text" id="score2" value="${match.score2 || ''}" placeholder="${scoreConfig.placeholder}"
                                class="w-full px-4 py-2 border-2 rounded-lg" 
                                style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
                     </div>
                 `;
             }
             
+            const isEditing = match.completed;
+            
             modal.innerHTML = `
-                <div class="bg-white rounded-lg p-6 max-w-md w-full">
-                    <h3 class="text-2xl font-bold mb-4" style="color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
-                        Enter Match Score
+                <div class="bg-white rounded-lg p-4 md:p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+                    <h3 class="text-xl md:text-2xl font-bold mb-4" style="color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
+                        ${isEditing ? '✏️ Edit Match Score' : 'Enter Match Score'}
                     </h3>
                     <div class="text-center mb-4 px-3 py-2 rounded-lg" style="background-color: ${window.elementSdk?.config?.secondary_color || defaultConfig.secondary_color}">
-                        <span class="font-semibold text-sm" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
+                        <span class="font-semibold text-xs md:text-sm" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
                             ${match.sport} - ${scoreConfig.label}
                         </span>
                     </div>
                     ${scoreInputsHTML}
-                    <div class="flex gap-3">
+                    <div class="flex flex-col sm:flex-row gap-3">
                         <button id="save-score" 
-                                class="flex-1 px-4 py-2 rounded-lg text-white font-semibold hover:opacity-90"
+                                class="flex-1 px-4 py-2 rounded-lg text-white font-semibold hover:opacity-90 text-sm md:text-base"
                                 style="background-color: ${window.elementSdk?.config?.button_color || defaultConfig.button_color}">
                             Save Score
                         </button>
                         <button id="cancel-score" 
-                                class="flex-1 px-4 py-2 rounded-lg border-2 font-semibold hover:bg-gray-50"
+                                class="flex-1 px-4 py-2 rounded-lg border-2 font-semibold hover:bg-gray-50 text-sm md:text-base"
                                 style="border-color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}; color: ${window.elementSdk?.config?.primary_color || defaultConfig.primary_color}">
                             Cancel
                         </button>
@@ -1025,6 +1459,7 @@
             document.getElementById('cancel-score').addEventListener('click', () => {
                 const modalEl = document.getElementById('score-modal');
                 if (modalEl) document.body.removeChild(modalEl);
+            });
             });
         }
 
@@ -1150,7 +1585,9 @@
         // Mock data SDK for local testing (when SDK is not available)
         if (!window.dataSdk) {
             console.log('Data SDK not available - using local storage fallback');
-            let localData = JSON.parse(localStorage.getItem('tournamentMatches') || '[]');
+            // CLEAR localStorage on every page load for fresh start
+            localStorage.removeItem('tournamentMatches');
+            let localData = [];
             
             window.dataSdk = {
                 init: async (handler) => {
@@ -1253,7 +1690,8 @@
                     }),
                     mapToEditPanelValues: (config) => new Map([
                         ["tournament_title", config.tournament_title || defaultConfig.tournament_title],
-                        ["tournament_subtitle", config.tournament_subtitle || defaultConfig.tournament_subtitle]
+                        ["tournament_subtitle", config.tournament_subtitle || defaultConfig.tournament_subtitle],
+                        ["admin_password", config.admin_password || defaultConfig.admin_password]
                     ])
                 });
             }
@@ -1265,5 +1703,5 @@
 
         init();
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9babc68ea463594e',t:'MTc2Nzg3NjE1NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9bac765240bd5520',t:'MTc2Nzg4MzM1NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
