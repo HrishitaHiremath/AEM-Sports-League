@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sports League Tournament</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/_sdk/data_sdk.js"></script>
   <script src="/_sdk/element_sdk.js"></script>
   <style>
@@ -50,7 +50,7 @@
             content: '🏏';
             position: absolute;
             font-size: 200px;
-            opacity: 0.60;
+            opacity: 0.6;
             top: 50%;
             left: 20%;
             transform: translate(-50%, -50%) rotate(-15deg);
@@ -60,7 +60,7 @@
             content: '🏏';
             position: absolute;
             font-size: 150px;
-            opacity: 0.60;
+            opacity: 0.6;
             top: 30%;
             right: 15%;
             transform: rotate(25deg);
@@ -74,7 +74,7 @@
             content: '⚽';
             position: absolute;
             font-size: 200px;
-            opacity: 0.60;
+            opacity: 0.6;
             top: 50%;
             left: 20%;
             transform: translate(-50%, -50%);
@@ -84,7 +84,7 @@
             content: '⚽';
             position: absolute;
             font-size: 150px;
-            opacity: 0.60;
+            opacity: 0.6;
             top: 30%;
             right: 15%;
             pointer-events: none;
@@ -416,6 +416,114 @@
         let currentSport = "Cricket";
         let currentView = "bracket";
         let allMatches = [];
+        let supabaseClient = null;
+
+        // Initialize Supabase client
+        function initSupabase() {
+            const config = window.elementSdk?.config || defaultConfig;
+            const supabaseUrl = config.supabase_url || defaultConfig.supabase_url;
+            const supabaseKey = config.supabase_anon_key || defaultConfig.supabase_anon_key;
+            const useSupabase = config.use_supabase || defaultConfig.use_supabase;
+
+            if (useSupabase && supabaseUrl && supabaseKey) {
+                try {
+                    supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+                    console.log('Supabase client initialized successfully');
+                    return true;
+                } catch (error) {
+                    console.error('Failed to initialize Supabase:', error);
+                    showToast('Failed to connect to Supabase', 'error');
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        // Check if Supabase is enabled and configured
+        function isSupabaseEnabled() {
+            const config = window.elementSdk?.config || defaultConfig;
+            return config.use_supabase && supabaseClient !== null;
+        }
+
+        // Load matches from Supabase
+        async function loadMatchesFromSupabase() {
+            if (!supabaseClient) return [];
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('tournament_matches')
+                    .select('*')
+                    .order('created_at', { ascending: true });
+
+                if (error) throw error;
+                
+                return data || [];
+            } catch (error) {
+                console.error('Error loading matches from Supabase:', error);
+                showToast('Failed to load matches from database', 'error');
+                return [];
+            }
+        }
+
+        // Save match to Supabase
+        async function saveMatchToSupabase(match) {
+            if (!supabaseClient) return { success: false };
+
+            try {
+                const matchData = {
+                    match_id: match.match_id,
+                    sport: match.sport,
+                    group: match.group,
+                    stage: match.stage,
+                    team1: match.team1,
+                    team2: match.team2,
+                    score1: match.score1 || null,
+                    score2: match.score2 || null,
+                    winner: match.winner || null,
+                    loser: match.loser || null,
+                    completed: match.completed || false,
+                    match_date: match.match_date || null,
+                    match_time: match.match_time || null,
+                    venue: match.venue || null
+                };
+
+                const { data, error } = await supabaseClient
+                    .from('tournament_matches')
+                    .upsert(matchData, { 
+                        onConflict: 'match_id',
+                        returning: 'representation'
+                    })
+                    .select();
+
+                if (error) throw error;
+
+                return { success: true, data };
+            } catch (error) {
+                console.error('Error saving match to Supabase:', error);
+                showToast('Failed to save match to database', 'error');
+                return { success: false, error };
+            }
+        }
+
+        // Delete match from Supabase
+        async function deleteMatchFromSupabase(matchId) {
+            if (!supabaseClient) return { success: false };
+
+            try {
+                const { error } = await supabaseClient
+                    .from('tournament_matches')
+                    .delete()
+                    .eq('match_id', matchId);
+
+                if (error) throw error;
+
+                return { success: true };
+            } catch (error) {
+                console.error('Error deleting match from Supabase:', error);
+                showToast('Failed to delete match from database', 'error');
+                return { success: false, error };
+            }
+        }
 
         const defaultConfig = {
             tournament_title: "Sports League Championship",
@@ -425,7 +533,10 @@
             text_color: "#1e3a8a",
             accent_color: "#3b82f6",
             button_color: "#2563eb",
-            admin_password: "Aem@TSM2026"
+            admin_password: "Aem@TSM2026",
+            supabase_url: "https://ygutodotnycpiwpeblaq.supabase.co",
+            supabase_anon_key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlndXRvZG90bnljcGl3cGVibGFxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI1NjI3NTUsImV4cCI6MjA2ODEzODc1NX0.l06WQ-AcBEeDV1IfQChiGhOz1tDw-MNr-jbMUGBFOTM",
+            use_supabase: true
         };
 
         const SPORT_ICONS = {
@@ -982,8 +1093,23 @@
                             ${match.venue ? `<div class="truncate">📍 ${match.venue}</div>` : ''}
                         </div>
                     ` : ''}
-                    ${!isCompleted && !isPlaceholder && canEnterScore ? `
+                    ${!isCompleted && canEnterScore ? `
                         <div class="flex flex-col md:flex-row gap-1">
+                            <button onclick="openScheduleModal('${match.match_id}')" 
+                                    class="flex-1 px-2 py-1.5 rounded-lg text-white text-xs font-semibold hover:opacity-90 transition-opacity ${isPlaceholder ? 'opacity-60 cursor-not-allowed' : ''}"
+                                    style="background-color: ${window.elementSdk?.config?.accent_color || defaultConfig.accent_color}"
+                                    ${isPlaceholder ? 'disabled' : ''}>
+                                📅 Schedule
+                            </button>
+                            <button onclick="openScoreModal('${match.match_id}')" 
+                                    class="flex-1 px-2 py-1.5 rounded-lg text-white text-xs font-semibold hover:opacity-90 transition-opacity ${isPlaceholder ? 'opacity-60 cursor-not-allowed' : ''}"
+                                    style="background-color: ${buttonColor}"
+                                    ${isPlaceholder ? 'disabled' : ''}>
+                                Enter Score
+                            </button>
+                        </div>
+                    ` : isCompleted && canEnterScore ? `
+                        <div class="flex flex-col md:flex-row gap-1 mt-2">
                             <button onclick="openScheduleModal('${match.match_id}')" 
                                     class="flex-1 px-2 py-1.5 rounded-lg text-white text-xs font-semibold hover:opacity-90 transition-opacity"
                                     style="background-color: ${window.elementSdk?.config?.accent_color || defaultConfig.accent_color}">
@@ -991,16 +1117,10 @@
                             </button>
                             <button onclick="openScoreModal('${match.match_id}')" 
                                     class="flex-1 px-2 py-1.5 rounded-lg text-white text-xs font-semibold hover:opacity-90 transition-opacity"
-                                    style="background-color: ${buttonColor}">
-                                Enter Score
+                                    style="background-color: ${window.elementSdk?.config?.accent_color || defaultConfig.accent_color}">
+                                ✏️ Edit Score
                             </button>
                         </div>
-                    ` : isCompleted && canEnterScore ? `
-                        <button onclick="openScoreModal('${match.match_id}')" 
-                                class="w-full px-2 py-1.5 rounded-lg text-white text-xs font-semibold hover:opacity-90 transition-opacity mt-2"
-                                style="background-color: ${window.elementSdk?.config?.accent_color || defaultConfig.accent_color}">
-                            ✏️ Edit Score
-                        </button>
                     ` : isPlaceholder ? `
                         <div class="text-center py-2 text-xs" style="color: #94a3b8;">
                             Awaiting results
@@ -1162,16 +1282,31 @@
                         venue: venue
                     };
 
-                    const existingMatch = allMatches.find(m => m.match_id === matchId);
-                    let result;
+                    let success = false;
 
-                    if (existingMatch && existingMatch.__backendId) {
-                        result = await window.dataSdk.update({ ...existingMatch, ...updatedMatch });
+                    // Save to Supabase if enabled
+                    if (isSupabaseEnabled()) {
+                        const result = await saveMatchToSupabase(updatedMatch);
+                        success = result.success;
+                        if (success) {
+                            const supabaseMatches = await loadMatchesFromSupabase();
+                            allMatches = supabaseMatches;
+                            renderContent();
+                        }
                     } else {
-                        result = await window.dataSdk.create(updatedMatch);
+                        // Otherwise use Data SDK
+                        const existingMatch = allMatches.find(m => m.match_id === matchId);
+                        let result;
+
+                        if (existingMatch && existingMatch.__backendId) {
+                            result = await window.dataSdk.update({ ...existingMatch, ...updatedMatch });
+                        } else {
+                            result = await window.dataSdk.create(updatedMatch);
+                        }
+                        success = result.isOk;
                     }
 
-                    if (result.isOk) {
+                    if (success) {
                         const modalEl = document.getElementById('schedule-modal');
                         if (modalEl) document.body.removeChild(modalEl);
                         showToast('Schedule saved successfully!', 'success');
@@ -1427,16 +1562,31 @@
                     venue: match.venue || ''
                 };
 
-                const existingMatch = allMatches.find(m => m.match_id === matchId);
-                let result;
+                let success = false;
 
-                if (existingMatch && existingMatch.__backendId) {
-                    result = await window.dataSdk.update({ ...existingMatch, ...updatedMatch });
+                // Save to Supabase if enabled
+                if (isSupabaseEnabled()) {
+                    const result = await saveMatchToSupabase(updatedMatch);
+                    success = result.success;
+                    if (success) {
+                        const supabaseMatches = await loadMatchesFromSupabase();
+                        allMatches = supabaseMatches;
+                        renderContent();
+                    }
                 } else {
-                    result = await window.dataSdk.create(updatedMatch);
+                    // Otherwise use Data SDK
+                    const existingMatch = allMatches.find(m => m.match_id === matchId);
+                    let result;
+
+                    if (existingMatch && existingMatch.__backendId) {
+                        result = await window.dataSdk.update({ ...existingMatch, ...updatedMatch });
+                    } else {
+                        result = await window.dataSdk.create(updatedMatch);
+                    }
+                    success = result.isOk;
                 }
 
-                if (result.isOk) {
+                if (success) {
                     const modalEl = document.getElementById('score-modal');
                     if (modalEl) document.body.removeChild(modalEl);
                     showToast('Score saved successfully!', 'success');
@@ -1567,102 +1717,54 @@
         }
 
         const dataHandler = {
-            onDataChanged(data) {
-                allMatches = data;
+            async onDataChanged(data) {
+                // If Supabase is enabled, load from there instead
+                if (isSupabaseEnabled()) {
+                    const supabaseMatches = await loadMatchesFromSupabase();
+                    allMatches = supabaseMatches;
+                } else {
+                    allMatches = data;
+                }
                 renderContent();
             }
         };
 
-        <script>
-/* ================= SUPABASE SETUP ================= */
-const SUPABASE_URL = 'https://ygutodotnycpiwpeblaq.supabase.co';
-const SUPABASE_ANON_KEY =
-'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlndXRvZG90bnljcGl3cGVibGFxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI1NjI3NTUsImV4cCI6MjA2ODEzODc1NX0.l06WQ-AcBEeDV1IfQChiGhOz1tDw-MNr-jbMUGBFOTM';
-
-const supabase = supabaseJs.createClient(
-SUPABASE_URL,
-SUPABASE_ANON_KEY
-);
-
-let dataHandler = null;
-
-/* ================= DATA SDK ================= */
-window.dataSdk = {
-
-init: async (handler) => {
-dataHandler = handler;
-
-const { data, error } = await supabase
-.from('matches')
-.select('*')
-.order('created_at', { ascending: true });
-
-if (error) {
-console.error(error);
-return { isOk: false };
-}
-
-handler.onDataChanged(data || []);
-return { isOk: true };
-},
-
-create: async (record) => {
-const { error } = await supabase
-.from('matches')
-.insert([record]);
-
-if (error) {
-alert('Save failed');
-return { isOk: false };
-}
-
-refreshData();
-return { isOk: true };
-},
-
-update: async (record) => {
-const { error } = await supabase
-.from('matches')
-.update(record)
-.eq('match_id', record.match_id);
-
-if (error) {
-alert('Update failed');
-return { isOk: false };
-}
-
-refreshData();
-return { isOk: true };
-},
-
-delete: async (record) => {
-const { error } = await supabase
-.from('matches')
-.delete()
-.eq('match_id', record.match_id);
-
-if (error) {
-alert('Delete failed');
-return { isOk: false };
-}
-
-refreshData();
-return { isOk: true };
-}
-};
-
-async function refreshData() {
-const { data } = await supabase
-.from('matches')
-.select('*')
-.order('created_at', { ascending: true });
-
-if (dataHandler) {
-dataHandler.onDataChanged(data);
-}
-}
-</script>
-
+        // Mock data SDK for local testing (when SDK is not available)
+        if (!window.dataSdk) {
+            console.log('Data SDK not available - using local storage fallback');
+            // Load existing data from localStorage instead of clearing it
+            const savedData = localStorage.getItem('tournamentMatches');
+            let localData = savedData ? JSON.parse(savedData) : [];
+            
+            window.dataSdk = {
+                init: async (handler) => {
+                    handler.onDataChanged(localData);
+                    return { isOk: true, isError: false };
+                },
+                create: async (record) => {
+                    record.__backendId = 'local_' + Date.now() + '_' + Math.random();
+                    localData.push(record);
+                    localStorage.setItem('tournamentMatches', JSON.stringify(localData));
+                    dataHandler.onDataChanged(localData);
+                    return { isOk: true, isError: false };
+                },
+                update: async (record) => {
+                    const index = localData.findIndex(m => m.__backendId === record.__backendId);
+                    if (index !== -1) {
+                        localData[index] = record;
+                        localStorage.setItem('tournamentMatches', JSON.stringify(localData));
+                        dataHandler.onDataChanged(localData);
+                    }
+                    return { isOk: true, isError: false };
+                },
+                delete: async (record) => {
+                    localData = localData.filter(m => m.__backendId !== record.__backendId);
+                    localStorage.setItem('tournamentMatches', JSON.stringify(localData));
+                    dataHandler.onDataChanged(localData);
+                    return { isOk: true, isError: false };
+                }
+            };
+        }
 
         async function onConfigChange(config) {
             document.getElementById('tournament-title').textContent = 
@@ -1675,16 +1777,34 @@ dataHandler.onDataChanged(data);
                 activeButton.style.backgroundColor = config.accent_color || defaultConfig.accent_color;
             }
             
+            // Re-initialize Supabase if config changed
+            const supabaseInitialized = initSupabase();
+            if (supabaseInitialized) {
+                const supabaseMatches = await loadMatchesFromSupabase();
+                allMatches = supabaseMatches;
+            }
+            
             renderSportTabs();
             renderContent();
         }
 
         async function init() {
+            // Initialize Supabase first
+            const supabaseInitialized = initSupabase();
+
             if (window.dataSdk) {
                 const result = await window.dataSdk.init(dataHandler);
                 if (!result.isOk) {
                     console.error('Failed to initialize data SDK');
                 }
+            }
+
+            // If Supabase is initialized, load data from there
+            if (supabaseInitialized) {
+                const supabaseMatches = await loadMatchesFromSupabase();
+                allMatches = supabaseMatches;
+                renderContent();
+                showToast('Connected to Supabase database', 'success');
             }
 
             if (window.elementSdk) {
@@ -1736,7 +1856,9 @@ dataHandler.onDataChanged(data);
                     mapToEditPanelValues: (config) => new Map([
                         ["tournament_title", config.tournament_title || defaultConfig.tournament_title],
                         ["tournament_subtitle", config.tournament_subtitle || defaultConfig.tournament_subtitle],
-                        ["admin_password", config.admin_password || defaultConfig.admin_password]
+                        ["admin_password", config.admin_password || defaultConfig.admin_password],
+                        ["supabase_url", config.supabase_url || defaultConfig.supabase_url],
+                        ["supabase_anon_key", config.supabase_anon_key || defaultConfig.supabase_anon_key]
                     ])
                 });
             }
@@ -1748,6 +1870,5 @@ dataHandler.onDataChanged(data);
 
         init();
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9bac9ef4b41445af',t:'MTc2Nzg4NTAxOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9bb4117035a845af',t:'MTc2Nzk2MzEwOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
-
