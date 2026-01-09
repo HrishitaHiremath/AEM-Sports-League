@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sports League Tournament</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="/_sdk/data_sdk.js"></script>
   <script src="/_sdk/element_sdk.js"></script>
@@ -1572,42 +1573,96 @@
             }
         };
 
-        // Mock data SDK for local testing (when SDK is not available)
-        if (!window.dataSdk) {
-            console.log('Data SDK not available - using local storage fallback');
-            // Load existing data from localStorage instead of clearing it
-            const savedData = localStorage.getItem('tournamentMatches');
-            let localData = savedData ? JSON.parse(savedData) : [];
-            
-            window.dataSdk = {
-                init: async (handler) => {
-                    handler.onDataChanged(localData);
-                    return { isOk: true, isError: false };
-                },
-                create: async (record) => {
-                    record.__backendId = 'local_' + Date.now() + '_' + Math.random();
-                    localData.push(record);
-                    localStorage.setItem('tournamentMatches', JSON.stringify(localData));
-                    dataHandler.onDataChanged(localData);
-                    return { isOk: true, isError: false };
-                },
-                update: async (record) => {
-                    const index = localData.findIndex(m => m.__backendId === record.__backendId);
-                    if (index !== -1) {
-                        localData[index] = record;
-                        localStorage.setItem('tournamentMatches', JSON.stringify(localData));
-                        dataHandler.onDataChanged(localData);
-                    }
-                    return { isOk: true, isError: false };
-                },
-                delete: async (record) => {
-                    localData = localData.filter(m => m.__backendId !== record.__backendId);
-                    localStorage.setItem('tournamentMatches', JSON.stringify(localData));
-                    dataHandler.onDataChanged(localData);
-                    return { isOk: true, isError: false };
-                }
-            };
-        }
+        <script>
+/* ================= SUPABASE SETUP ================= */
+const SUPABASE_URL = 'https://ygutodotnycpiwpeblaq.supabase.co';
+const SUPABASE_ANON_KEY =
+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlndXRvZG90bnljcGl3cGVibGFxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI1NjI3NTUsImV4cCI6MjA2ODEzODc1NX0.l06WQ-AcBEeDV1IfQChiGhOz1tDw-MNr-jbMUGBFOTM';
+
+const supabase = supabaseJs.createClient(
+SUPABASE_URL,
+SUPABASE_ANON_KEY
+);
+
+let dataHandler = null;
+
+/* ================= DATA SDK ================= */
+window.dataSdk = {
+
+init: async (handler) => {
+dataHandler = handler;
+
+const { data, error } = await supabase
+.from('matches')
+.select('*')
+.order('created_at', { ascending: true });
+
+if (error) {
+console.error(error);
+return { isOk: false };
+}
+
+handler.onDataChanged(data || []);
+return { isOk: true };
+},
+
+create: async (record) => {
+const { error } = await supabase
+.from('matches')
+.insert([record]);
+
+if (error) {
+alert('Save failed');
+return { isOk: false };
+}
+
+refreshData();
+return { isOk: true };
+},
+
+update: async (record) => {
+const { error } = await supabase
+.from('matches')
+.update(record)
+.eq('match_id', record.match_id);
+
+if (error) {
+alert('Update failed');
+return { isOk: false };
+}
+
+refreshData();
+return { isOk: true };
+},
+
+delete: async (record) => {
+const { error } = await supabase
+.from('matches')
+.delete()
+.eq('match_id', record.match_id);
+
+if (error) {
+alert('Delete failed');
+return { isOk: false };
+}
+
+refreshData();
+return { isOk: true };
+}
+};
+
+async function refreshData() {
+const { data } = await supabase
+.from('matches')
+.select('*')
+.order('created_at', { ascending: true });
+
+if (dataHandler) {
+dataHandler.onDataChanged(data);
+}
+}
+</script>
+
 
         async function onConfigChange(config) {
             document.getElementById('tournament-title').textContent = 
@@ -1695,3 +1750,4 @@
     </script>
  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9bac9ef4b41445af',t:'MTc2Nzg4NTAxOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
+
