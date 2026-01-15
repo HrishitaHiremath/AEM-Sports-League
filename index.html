@@ -1,14 +1,14 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" class="h-full">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sports League Tournament</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="/_sdk/data_sdk.js"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports League Tournament</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/_sdk/data_sdk.js"></script>
+    <script src="/_sdk/element_sdk.js"></script>
+    <style>
         body {
             box-sizing: border-box;
             font-family: 'Rajdhani', 'Segoe UI', Tahoma, sans-serif;
@@ -296,7 +296,7 @@
             border-radius: 2px;
         }
         .bracket-connector::before {
-            content: '   ';
+            content: '▶';
             position: absolute;
             right: -50px;
             top: 50%;
@@ -352,31 +352,44 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
     </style>
-  <style>@view-transition { navigation: auto; }</style>
- </head>
- <body class="h-full">
-  <div id="app" class="w-full h-full overflow-auto" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
-   <div class="min-h-full p-6"><!-- Header -->
-    <div class="text-center mb-8">
-     <h1 id="tournament-title" class="text-5xl font-bold text-white mb-2">AEM Sports Tournament 2026</h1>
-     <p id="tournament-subtitle" class="text-xl text-amber-200">Annual Championship</p>
-    </div><!-- Sport Tabs -->
-    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-6">
-     <div id="sport-tabs" class="flex flex-wrap gap-2 justify-center"></div>
-    </div><!-- View Toggle -->
-    <div class="flex flex-col sm:flex-row justify-center gap-3 md:gap-4 mb-4 md:mb-6"><button id="view-bracket" class="nav-tab px-4 md:px-6 py-2 md:py-3 rounded-lg font-bold text-white shadow-lg text-sm md:text-base"> 🏆 Sport Schedules </button> <button id="view-overall" class="nav-tab px-4 md:px-6 py-2 md:py-3 rounded-lg font-bold bg-white/20 text-white hover:bg-white/30 text-sm md:text-base"> 📊 Overall Standings </button>
-    </div><!-- Content Area -->
-    <div id="content-area" class="bg-white rounded-lg shadow-2xl p-3 md:p-6"></div>
-   </div>
-  </div>
-  <script>
+</head>
+<body class="h-full">
+    <div id="app" class="w-full h-full overflow-auto" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
+        <div class="min-h-full p-6">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <h1 id="tournament-title" class="text-5xl font-bold text-white mb-2">AEM Sports Tournament 2026</h1>
+                <p id="tournament-subtitle" class="text-xl text-amber-200">Annual Championship</p>
+            </div>
+
+            <!-- Sport Tabs -->
+            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-6">
+                <div id="sport-tabs" class="flex flex-wrap gap-2 justify-center"></div>
+            </div>
+
+            <!-- View Toggle -->
+            <div class="flex flex-col sm:flex-row justify-center gap-3 md:gap-4 mb-4 md:mb-6">
+                <button id="view-bracket" class="nav-tab px-4 md:px-6 py-2 md:py-3 rounded-lg font-bold text-white shadow-lg text-sm md:text-base">
+                    🏆 Sport Schedules
+                </button>
+                <button id="view-overall" class="nav-tab px-4 md:px-6 py-2 md:py-3 rounded-lg font-bold bg-white/20 text-white hover:bg-white/30 text-sm md:text-base">
+                    📊 Overall Standings
+                </button>
+            </div>
+
+            <!-- Content Area -->
+            <div id="content-area" class="bg-white rounded-lg shadow-2xl p-3 md:p-6"></div>
+        </div>
+    </div>
+
+    <script>
         const SPORTS_DATA = {
             "Cricket": {
-                "Group A": ["Project Falcons", "Power Predators", "Central Stallions", "Steel Lions"],
-                "Group B": ["Voltage Vipers", "Vayu Warriors", "Iron Titans", "Tech Thunder"]
+                "Group A": ["Tech Thunder", "Power Predators","Voltage Vipers","Iron Titans"],
+                "Group B": [ "Vayu Warriors","Central Stallions" ,"Steel Lions", "Project Falcons"]
             },
             "Football": {
-                "Group A": ["Power Predators", "Project Falcons", "Steel Lions", "Vayu Warriors"],
+                "Group A": ["Power Predators", "Steel Lions", "Project Falcons",  "Vayu Warriors"],
                 "Group B": ["Iron Titans", "Voltage Vipers", "Central Stallions", "Tech Thunder"]
             },
             "Handball": {
@@ -384,32 +397,32 @@
                 "Group B": ["Steel Lions", "Tech Thunder", "Central Stallions", "Project Falcons"]
             },
             "Tug of War (Female)": {
-                "Group A": ["Power Predators", "Voltage Vipers", "Vayu Warriors", "Central Stallions"],
-                "Group B": ["Iron Titans", "Steel Lions", "Tech Thunder", "Project Falcons"]
+                "Group A": ["Power Predators", "Vayu Warriors", "Voltage Vipers", "Central Stallions"],
+                "Group B": ["Iron Titans","Project Falcons" , "Tech Thunder", "Steel Lions"]
             },
             "Volleyball": {
-                "Group A": ["Vayu Warriors", "Central Stallions", "Voltage Vipers", "Power Predators"],
+                "Group A": ["Vayu Warriors", "Power Predators","Central Stallions", "Voltage Vipers"],
                 "Group B": ["Steel Lions", "Project Falcons", "Iron Titans", "Tech Thunder"]
             },
             "Table Tennis": {
                 "Group A": ["Central Stallions", "Power Predators", "Vayu Warriors", "Tech Thunder"],
-                "Group B": ["Voltage Vipers", "Steel Lions", "Iron Titans", "Project Falcons"]
+                "Group B": ["Project Falcons","Iron Titans" ,"Steel Lions" , "Voltage Vipers"]
             },
             "Badminton": {
-                "Group A": ["Iron Titans", "Central Stallions", "Vayu Warriors","Steel Lions" ],
-                "Group B": ["Project Falcons", "Tech Thunder", "Power Predators", "Voltage Vipers"]
+                "Group A": ["Iron Titans", "Central Stallions", "Vayu Warriors", "Steel Lions"],
+                "Group B": ["Voltage Vipers","Power Predators" , "Tech Thunder", "Project Falcons"]
             },
             "Carrom": {
-                "Group A": ["Project Falcons", "Iron Titans", "Power Predators", "Vayu Warriors"],
+                "Group A": ["Project Falcons", "Power Predators","Iron Titans" , "Vayu Warriors"],
                 "Group B": ["Voltage Vipers", "Steel Lions", "Central Stallions", "Tech Thunder"]
             },
             "Chess": {
                 "Group A": ["Central Stallions", "Steel Lions", "Power Predators", "Project Falcons"],
-                "Group B": ["Vayu Warriors", "Iron Titans", "Voltage Vipers", "Tech Thunder"]
+                "Group B": ["Vayu Warriors", "Voltage Vipers","Iron Titans",  "Tech Thunder"]
             },
             "Tug of War (Male)": {
                 "Group A": ["Power Predators", "Voltage Vipers", "Project Falcons", "Tech Thunder"],
-                "Group B": ["Steel Lions", "Iron Titans", "Central Stallions", "Vayu Warriors"]
+                "Group B": ["Steel Lions", "Central Stallions","Iron Titans", "Vayu Warriors"]
             }
         };
 
@@ -533,7 +546,7 @@
             text_color: "#1e3a8a",
             accent_color: "#3b82f6",
             button_color: "#2563eb",
-            admin_password: "Aem@TSM2026",
+            admin_password: "admin123",
             supabase_url: "https://ygutodotnycpiwpeblaq.supabase.co",
             supabase_anon_key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlndXRvZG90bnljcGl3cGVibGFxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI1NjI3NTUsImV4cCI6MjA2ODEzODc1NX0.l06WQ-AcBEeDV1IfQChiGhOz1tDw-MNr-jbMUGBFOTM",
             use_supabase: true
@@ -963,13 +976,15 @@
             const semi2Winner = semi2Match?.completed ? semi2Match.winner : null;
             const champion = finalMatch?.completed ? finalMatch.winner : null;
 
+            // Semi Final 1: Group A Winner vs Group A Runner-up
             const semi1Team1 = groupAWinner || "Winner Group A";
-            const semi1Team2 = groupBRunnerUp || "Runner-up Group B";
+            const semi1Team2 = groupARunnerUp || "Runner-up Group A";
+            // Semi Final 2: Group B Winner vs Group B Runner-up
             const semi2Team1 = groupBWinner || "Winner Group B";
-            const semi2Team2 = groupARunnerUp || "Runner-up Group A";
+            const semi2Team2 = groupBRunnerUp || "Runner-up Group B";
             
-            const semi1HasPlaceholders = !groupAWinner || !groupBRunnerUp;
-            const semi2HasPlaceholders = !groupBWinner || !groupARunnerUp;
+            const semi1HasPlaceholders = !groupAWinner || !groupARunnerUp;
+            const semi2HasPlaceholders = !groupBWinner || !groupBRunnerUp;
 
             html += `
                         <div class="flex flex-col justify-center">
@@ -1619,29 +1634,29 @@
 
             if (matchId.includes('semi-final-1')) {
                 const groupAWinner = getGroupWinner(sport, "Group A");
-                const groupBRunnerUp = getGroupRunnerUp(sport, "Group B");
-                if (groupAWinner && groupBRunnerUp) {
+                const groupARunnerUp = getGroupRunnerUp(sport, "Group A");
+                if (groupAWinner && groupARunnerUp) {
                     return {
                         match_id: matchId,
                         sport: sport,
                         group: "Semi Finals",
                         stage: "Semi Final 1",
                         team1: groupAWinner,
-                        team2: groupBRunnerUp,
+                        team2: groupARunnerUp,
                         completed: false
                     };
                 }
             } else if (matchId.includes('semi-final-2')) {
                 const groupBWinner = getGroupWinner(sport, "Group B");
-                const groupARunnerUp = getGroupRunnerUp(sport, "Group A");
-                if (groupBWinner && groupARunnerUp) {
+                const groupBRunnerUp = getGroupRunnerUp(sport, "Group B");
+                if (groupBWinner && groupBRunnerUp) {
                     return {
                         match_id: matchId,
                         sport: sport,
                         group: "Semi Finals",
                         stage: "Semi Final 2",
                         team1: groupBWinner,
-                        team2: groupARunnerUp,
+                        team2: groupBRunnerUp,
                         completed: false
                     };
                 }
@@ -1870,5 +1885,5 @@
 
         init();
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9bb4117035a845af',t:'MTc2Nzk2MzEwOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
