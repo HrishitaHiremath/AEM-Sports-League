@@ -1,14 +1,14 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" class="h-full">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sports League Tournament</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/_sdk/data_sdk.js"></script>
-    <script src="/_sdk/element_sdk.js"></script>
-    <style>
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sports League Tournament</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
         body {
             box-sizing: border-box;
             font-family: 'Rajdhani', 'Segoe UI', Tahoma, sans-serif;
@@ -352,37 +352,24 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
     </style>
-</head>
-<body class="h-full">
-    <div id="app" class="w-full h-full overflow-auto" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
-        <div class="min-h-full p-6">
-            <!-- Header -->
-            <div class="text-center mb-8">
-                <h1 id="tournament-title" class="text-5xl font-bold text-white mb-2">AEM Sports Tournament 2026</h1>
-                <p id="tournament-subtitle" class="text-xl text-amber-200">Annual Championship</p>
-            </div>
-
-            <!-- Sport Tabs -->
-            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-6">
-                <div id="sport-tabs" class="flex flex-wrap gap-2 justify-center"></div>
-            </div>
-
-            <!-- View Toggle -->
-            <div class="flex flex-col sm:flex-row justify-center gap-3 md:gap-4 mb-4 md:mb-6">
-                <button id="view-bracket" class="nav-tab px-4 md:px-6 py-2 md:py-3 rounded-lg font-bold text-white shadow-lg text-sm md:text-base">
-                    🏆 Sport Schedules
-                </button>
-                <button id="view-overall" class="nav-tab px-4 md:px-6 py-2 md:py-3 rounded-lg font-bold bg-white/20 text-white hover:bg-white/30 text-sm md:text-base">
-                    📊 Overall Standings
-                </button>
-            </div>
-
-            <!-- Content Area -->
-            <div id="content-area" class="bg-white rounded-lg shadow-2xl p-3 md:p-6"></div>
-        </div>
-    </div>
-
-    <script>
+  <style>@view-transition { navigation: auto; }</style>
+ </head>
+ <body class="h-full">
+  <div id="app" class="w-full h-full overflow-auto" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
+   <div class="min-h-full p-6"><!-- Header -->
+    <div class="text-center mb-8">
+     <h1 id="tournament-title" class="text-5xl font-bold text-white mb-2">AEM Sports Tournament 2026</h1>
+     <p id="tournament-subtitle" class="text-xl text-amber-200">Annual Championship</p>
+    </div><!-- Sport Tabs -->
+    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-6">
+     <div id="sport-tabs" class="flex flex-wrap gap-2 justify-center"></div>
+    </div><!-- View Toggle -->
+    <div class="flex flex-col sm:flex-row justify-center gap-3 md:gap-4 mb-4 md:mb-6"><button id="view-bracket" class="nav-tab px-4 md:px-6 py-2 md:py-3 rounded-lg font-bold text-white shadow-lg text-sm md:text-base"> 🏆 Sport Schedules </button> <button id="view-overall" class="nav-tab px-4 md:px-6 py-2 md:py-3 rounded-lg font-bold bg-white/20 text-white hover:bg-white/30 text-sm md:text-base"> 📊 Overall Standings </button>
+    </div><!-- Content Area -->
+    <div id="content-area" class="bg-white rounded-lg shadow-2xl p-3 md:p-6"></div>
+   </div>
+  </div>
+  <script>
         const SPORTS_DATA = {
             "Cricket": {
                 "Group A": ["Tech Thunder", "Power Predators","Voltage Vipers","Iron Titans"],
@@ -662,6 +649,33 @@
             return semiMatch ? semiMatch.loser : null;
         }
 
+        function getFourthPlaceTeams(sport) {
+            const winner = getSportWinner(sport);
+            const runnerUp = getSportRunnerUp(sport);
+            const thirdPlace1 = getSemiFinalist(sport, 1);
+            const thirdPlace2 = getSemiFinalist(sport, 2);
+            
+            const topFour = new Set([winner, runnerUp, thirdPlace1, thirdPlace2].filter(Boolean));
+            const fourthPlaceTeams = [];
+            
+            Object.values(SPORTS_DATA[sport]).forEach(group => {
+                group.forEach(team => {
+                    if (!topFour.has(team)) {
+                        const hasMatches = allMatches.some(m => 
+                            m.sport === sport && 
+                            (m.team1 === team || m.team2 === team) && 
+                            m.completed
+                        );
+                        if (hasMatches) {
+                            fourthPlaceTeams.push(team);
+                        }
+                    }
+                });
+            });
+            
+            return fourthPlaceTeams;
+        }
+
         function getOverallStandings() {
             const allTeams = new Set();
             Object.values(SPORTS_DATA).forEach(sport => {
@@ -676,6 +690,7 @@
                 golds: 0,
                 silvers: 0,
                 bronzes: 0,
+                fourths: 0,
                 participations: 0
             }));
 
@@ -684,6 +699,7 @@
                 const runnerUp = getSportRunnerUp(sport);
                 const thirdPlace1 = getSemiFinalist(sport, 1);
                 const thirdPlace2 = getSemiFinalist(sport, 2);
+                const fourthPlaceTeams = getFourthPlaceTeams(sport);
                 
                 if (winner) {
                     const idx = standings.findIndex(s => s.team === winner);
@@ -711,11 +727,19 @@
                     }
                 });
 
+                fourthPlaceTeams.forEach(team => {
+                    const idx = standings.findIndex(s => s.team === team);
+                    if (idx !== -1) {
+                        standings[idx].points += 45;
+                        standings[idx].fourths++;
+                    }
+                });
+
                 Object.values(SPORTS_DATA[sport]).forEach(group => {
                     group.forEach(team => {
                         const idx = standings.findIndex(s => s.team === team);
                         if (idx !== -1) {
-                            if (team !== winner && team !== runnerUp && team !== thirdPlace1 && team !== thirdPlace2) {
+                            if (team !== winner && team !== runnerUp && team !== thirdPlace1 && team !== thirdPlace2 && !fourthPlaceTeams.includes(team)) {
                                 const hasMatches = allMatches.some(m => 
                                     m.sport === sport && 
                                     (m.team1 === team || m.team2 === team) && 
@@ -802,7 +826,7 @@
                     </h2>
                     <div class="mb-4 p-3 md:p-4 rounded-lg" style="background-color: ${window.elementSdk?.config?.secondary_color || defaultConfig.secondary_color}">
                         <p class="text-xs md:text-sm font-semibold mb-2" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
-                            Points System: 🥇 Winner = 90 pts | 🥈 Runner-up = 60 pts | 🥉 3rd Place = 45 pts | Participation = 30 pts
+                            Points System: 🥇 Winner = 90 pts | 🥈 Runner-up = 60 pts | 🥉 3rd Place = 45 pts | 4th Place = 45 pts | Participation = 30 pts
                         </p>
                     </div>
                     <div class="overflow-x-auto -mx-3 md:mx-0">
@@ -1885,5 +1909,5 @@
 
         init();
     </script>
-</body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9bf79fe095784010',t:'MTc2ODY3MTQ4OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
