@@ -699,13 +699,16 @@
                 const runnerUp = getSportRunnerUp(sport);
                 const thirdPlace1 = getSemiFinalist(sport, 1);
                 const thirdPlace2 = getSemiFinalist(sport, 2);
-                const fourthPlaceTeams = getFourthPlaceTeams(sport);
+                
+                // Track teams that got points in this sport
+                const teamsWithPoints = new Set();
                 
                 if (winner) {
                     const idx = standings.findIndex(s => s.team === winner);
                     if (idx !== -1) {
                         standings[idx].points += 90;
                         standings[idx].golds++;
+                        teamsWithPoints.add(winner);
                     }
                 }
                 
@@ -714,38 +717,35 @@
                     if (idx !== -1) {
                         standings[idx].points += 60;
                         standings[idx].silvers++;
+                        teamsWithPoints.add(runnerUp);
                     }
                 }
 
+                // 3rd place teams (semi-final losers) get 45 points each
                 [thirdPlace1, thirdPlace2].forEach(team => {
                     if (team) {
                         const idx = standings.findIndex(s => s.team === team);
                         if (idx !== -1) {
                             standings[idx].points += 45;
                             standings[idx].bronzes++;
+                            teamsWithPoints.add(team);
                         }
                     }
                 });
 
-                fourthPlaceTeams.forEach(team => {
-                    const idx = standings.findIndex(s => s.team === team);
-                    if (idx !== -1) {
-                        standings[idx].points += 45;
-                        standings[idx].fourths++;
-                    }
-                });
-
+                // All other teams that participated get 30 points
                 Object.values(SPORTS_DATA[sport]).forEach(group => {
                     group.forEach(team => {
-                        const idx = standings.findIndex(s => s.team === team);
-                        if (idx !== -1) {
-                            if (team !== winner && team !== runnerUp && team !== thirdPlace1 && team !== thirdPlace2 && !fourthPlaceTeams.includes(team)) {
-                                const hasMatches = allMatches.some(m => 
-                                    m.sport === sport && 
-                                    (m.team1 === team || m.team2 === team) && 
-                                    m.completed
-                                );
-                                if (hasMatches) {
+                        // Only give participation points if team hasn't already received winner/runner-up/3rd place points
+                        if (!teamsWithPoints.has(team)) {
+                            const hasMatches = allMatches.some(m => 
+                                m.sport === sport && 
+                                (m.team1 === team || m.team2 === team) && 
+                                m.completed
+                            );
+                            if (hasMatches) {
+                                const idx = standings.findIndex(s => s.team === team);
+                                if (idx !== -1) {
                                     standings[idx].points += 30;
                                     standings[idx].participations++;
                                 }
@@ -826,7 +826,7 @@
                     </h2>
                     <div class="mb-4 p-3 md:p-4 rounded-lg" style="background-color: ${window.elementSdk?.config?.secondary_color || defaultConfig.secondary_color}">
                         <p class="text-xs md:text-sm font-semibold mb-2" style="color: ${window.elementSdk?.config?.text_color || defaultConfig.text_color}">
-                            Points System: 🥇 Winner = 90 pts | 🥈 Runner-up = 60 pts | 🥉 3rd Place = 45 pts | 4th Place = 45 pts | Participation = 30 pts
+                            Points System: 🥇 Winner = 90 pts | 🥈 Runner-up = 60 pts | 🥉 3rd Place (Semi-final Losers) = 45 pts each | Participation = 30 pts
                         </p>
                     </div>
                     <div class="overflow-x-auto -mx-3 md:mx-0">
@@ -1909,5 +1909,5 @@
 
         init();
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9bf79fe095784010',t:'MTc2ODY3MTQ4OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9bf7bc26e04b0b19',t:'MTc2ODY3MjY0Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
